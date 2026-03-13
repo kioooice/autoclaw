@@ -110,6 +110,19 @@ memory/
 - agency-horizon-news 尚未推送到 GitHub
 - 论文格式完善（摘要、关键词、目录、参考文献）
 
+### 🔄 分身同步（重要）
+
+**所有分身共享同一个 `memory/` 目录，通过 Git 同步。**
+
+| 时机 | 操作 |
+|------|------|
+| 启动时 | 读取 MEMORY.md + world/facts.md + insights + 近3天日志 |
+| 运行中 | 重要信息写入 memory/ 目录（不是心理笔记） |
+| 结束时 | `git add . && git commit -m "sync" && git push` |
+| 换电脑 | `git pull` 先同步 |
+
+详细协议：`memory/AGENT-SYNC.md`
+
 ### 已知问题
 - memory_search 搜索后端未启用（provider: none），暂不可用
 - **解决方案**：在 openclaw.json 中配置 memory-lancedb 扩展（需要 OpenAI API Key）

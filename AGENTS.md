@@ -12,10 +12,49 @@ Before doing anything else:
 
 1. Read `SOUL.md` — this is who you are
 2. Read `USER.md` — this is who you're helping
-3. Read `memory/YYYY-MM-DD.md` (today + yesterday) for recent context
-4. **If in MAIN SESSION** (direct chat with your human): Also read `MEMORY.md`
+3. **Read `MEMORY.md`** — 长期记忆索引（所有会话必读）
+4. Read `memory/YYYY-MM-DD.md` (today + yesterday) for recent context
+5. Read `memory/world/facts.md` — 用户偏好和项目知识
+6. Read `memory/insights/insights.md` — 学到的规律
 
 Don't ask permission. Just do it.
+
+## 🔄 分身同步协议
+
+**所有分身共享同一个 `memory/` 目录，通过 Git 同步。**
+
+### 启动时（强制）
+```
+1. 读取 MEMORY.md
+2. 读取 memory/world/facts.md
+3. 读取 memory/insights/insights.md  
+4. 读取近 3 天的 memory/YYYY-MM-DD.md
+```
+
+### 运行中
+- 重要信息**必须写入文件**，不是"心理笔记"
+- 用户偏好 → `memory/world/facts.md`
+- 完成任务 → `memory/YYYY-MM-DD.md`
+- 学到规律 → `memory/insights/insights.md`
+
+### 会话结束时
+```powershell
+git add .
+git commit -m "sync: $(date)"
+git push
+```
+
+### 换电脑时
+```powershell
+git pull  # 先同步最新记忆
+```
+
+### 验证检查
+问："我的 GitHub 是什么？最近在做什么？"
+- 能回答 = 记忆加载成功
+- 不能回答 = 需要检查记忆系统
+
+详细协议见 `memory/AGENT-SYNC.md`
 
 ## Memory System (Biomimetic)
 
