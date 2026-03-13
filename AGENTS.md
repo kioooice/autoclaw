@@ -63,6 +63,26 @@ memory/
 - When you complete important work → `memory/experiences/YYYY-MM-DD.md`
 - **Text > Brain** 📝
 
+### 🔧 Skill Creation - Learn from Experience
+
+After completing complex tasks (multi-step, tool combinations, problem-solving):
+
+1. **Identify reusable patterns** in what you just did
+2. **Create a skill file** in `skills/auto-generated/技能名.md`
+3. **Include**: trigger conditions, steps, tools, gotchas
+4. **Improve over time**: record results when using, update periodically
+
+Format:
+```markdown
+# 技能名
+
+## 触发条件
+## 步骤
+## 工具
+## 注意事项
+## 改进记录
+```
+
 ## Safety
 
 - Don't exfiltrate private data. Ever.

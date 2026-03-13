@@ -10,3 +10,22 @@ Thumbs.db
 
 # 可选：归档的旧经历（太大了可以不上传）
 # memory/experiences/archive/
+
+# 克隆的外部仓库
+Horizon/
+Skill_Seekers/
+Agent-Reach/
+skill-seekers-repo/
+autoclaw/
+2026/
+
+# 配置目录
+.openclaw/
+.opencode/
+config/
+
+# 临时/构建文件
+artifact/
+__pycache__/
+*.pyc
+node_modules/

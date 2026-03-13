@@ -15,6 +15,11 @@
 - [ ] 清理过时的 world/facts
 - [ ] 合并重复的日常日志
 
+### 每周任务
+
+- [ ] 运行归档脚本：`powershell scripts/archive-experiences.ps1`
+- [ ] 检查 archive/ 目录，清理过老的归档文件（超过 90 天）
+
 ## 反思触发条件
 
 当满足以下任一条件时，在心跳中执行反思：

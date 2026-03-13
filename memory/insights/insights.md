@@ -41,9 +41,58 @@
 
 <!-- 验证有效的做事方法 -->
 
+### 技能自主创建与改进（2026-03-13）
+
+**来源**：Hermes Agent 核心机制
+
+**原则**：
+1. **完成复杂任务后** → 自动提炼可复用模式 → 创建技能文件
+2. **使用技能时** → 记录效果 → 定期改进技能
+
+**技能存放位置**：`skills/auto-generated/`
+
+**适用场景**：任何多步骤、涉及工具组合的问题解决过程
+
 ## 踩坑记录
 
 <!-- 需要避免的错误 -->
+
+---
+
+## 技术发现
+
+### memory_search 当前不可用（2026-03-13）
+
+**来源**：测试记忆系统检索功能
+
+**现象**：`memory_search` 返回 `"provider": "none"`，即使 FTS 模式也返回空结果
+
+**原因**：OpenClaw 的 memory_search 需要 `memory-lancedb` 扩展，需要配置：
+
+```json
+// openclaw.json 中添加：
+{
+  "memory": {
+    "provider": "memory-lancedb",
+    "config": {
+      "embedding": {
+        "apiKey": "sk-xxx",  // OpenAI API Key
+        "model": "text-embedding-3-small"
+      },
+      "autoCapture": true,
+      "autoRecall": true
+    }
+  }
+}
+```
+
+**当前状态**：未配置（用户无 OpenAI API Key，暂不启用语义搜索）
+
+**替代方案**：
+- 直接用 `read` 读取 MEMORY.md 和 memory/ 下的文件
+- 启动会话时主动加载 MEMORY.md 和近 2-3 天的日志
+
+**适用场景**：任何使用 OpenClaw memory_search 的场景
 
 ---
 
