@@ -1,0 +1,12 @@
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# 敏感信息（如有）
+*.key
+*.pem
+.env
+.env.*
+
+# 可选：归档的旧经历（太大了可以不上传）
+# memory/experiences/archive/
