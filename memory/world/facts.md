@@ -16,6 +16,7 @@
 
 - [用户] [时区] 时区：GMT+8（Asia/Shanghai）
 - [用户] [GitHub] GitHub: https://github.com/kioooice
+- [用户] [工作流] **多电脑接力使用**：需要在不同电脑间同步工作状态和记忆
 
 ## 偏好设置
 

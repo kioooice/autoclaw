@@ -88,6 +88,7 @@ memory/
 ### 用户信息
 - 时区：GMT+8（Asia/Shanghai）
 - GitHub：https://github.com/kioooice
+- **多电脑接力使用**：需要在不同电脑间同步工作状态和记忆
 
 ### 已安装工具
 | 工具 | 用途 | 源 |
