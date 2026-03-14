@@ -31,22 +31,20 @@ Don't ask permission. Just do it.
 4. 读取近 3 天的 memory/YYYY-MM-DD.md
 ```
 
-### 运行中
-- 重要信息**必须写入文件**，不是"心理笔记"
-- 用户偏好 → `memory/world/facts.md`
-- 完成任务 → `memory/YYYY-MM-DD.md`
-- 学到规律 → `memory/insights/insights.md`
+### 正常使用
+- 不需要频繁同步
+- 重要信息写入 memory/ 目录即可
 
-### 会话结束时
+### 关闭前（用户请求时）
 ```powershell
 git add .
-git commit -m "sync: $(date)"
+git commit -m "sync: session end"
 git push
 ```
 
-### 换电脑时
+### 下次启动网关后
 ```powershell
-git pull  # 先同步最新记忆
+git pull
 ```
 
 ### 验证检查
