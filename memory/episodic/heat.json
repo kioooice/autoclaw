@@ -1,0 +1,16 @@
+{
+  "items": [
+    {
+      "id": "cli-anything-project",
+      "path": "episodic/warm/cli-anything.md",
+      "access_count": 1,
+      "importance": 0.8,
+      "last_access": "2026-03-14T13:02:00Z",
+      "user_explicit": true,
+      "heat_score": 0.72,
+      "keywords": ["cli", "agent", "automation", "software"]
+    }
+  ],
+  "last_reflect": null,
+  "version": "2.0"
+}

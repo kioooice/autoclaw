@@ -20,7 +20,10 @@
 
 ## 偏好设置
 
-<!-- 待填充：用户的偏好和习惯 -->
+- [偏好] [工作流] **先规划后执行**：确定方案后，先写完整规划，用户确认后再执行。适用于所有对话和所有分身。
+- [偏好] [沟通] 简洁直接，不废话
+- [偏好] [开发] **优先找现成项目**：开发任何东西前，先搜索 GitHub/开源社区是否有现成项目，没有再自己开发。避免重复造轮子。
+- [偏好] [浏览器] 使用 **Edge** 浏览器
 
 ## 项目知识
 
@@ -55,6 +58,13 @@
 - [自动化] 每周技能自动更新：周一 10:00 (Asia/Shanghai)
 - [自动化] OpenClaw cron：`~/.openclaw/cron/jobs.json`
 - [自动化] Windows 任务计划：`Skillhub-Daily-Upgrade`（每周一 10:00）
+
+### Skill 工作流机制
+- [技能] [工作流] Skill 本身支持单对话工作流自动化
+- [技能] [工作流] 通过 SKILL.md 定义：触发条件、步骤、工具、注意事项
+- [技能] [工作流] 触发后 Agent 自动按流程执行多步骤任务
+- [技能] [工作流] 自定义工作流目录：`skills/auto-generated/`
+- [技能] [工作流] 示例：Code Skill（Planning→Implement→Verify→Test）、seo-content-writer
 
 ### 待推送项目
 - [待办] agency-horizon-news 尚未推送到 GitHub
