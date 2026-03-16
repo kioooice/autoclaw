@@ -1,0 +1,63 @@
+name: agency-horizon-news
+description: AI Tech News Curator - Generates daily bilingual tech news briefings
+type: agency
+version: 1.0.0
+
+# Trigger configuration
+triggers:
+  - type: keyword
+    value: "1"
+    exact: true
+    description: "输入 '1' 触发 Horizon News 生成今日科技新闻简报"
+
+# Agency configuration
+config:
+  repository: https://github.com/Thysrael/Horizon
+  demo: https://thysrael.github.io/Horizon/
+  
+# Task template
+task: |
+  作为 Horizon News AI 策展人，请执行以下任务：
+  
+  1. **收集新闻**: 从以下来源获取最新科技新闻：
+     - Hacker News 热门文章
+     - 配置的 RSS 源
+     - Reddit 相关板块
+     - GitHub 热门仓库和发布
+  
+  2. **AI 评分**: 对每条新闻进行 0-10 分评分，评估维度：
+     - 技术深度 (Technical Depth)
+     - 新颖性 (Novelty)
+     - 影响力 (Impact)
+     - 社区关注度 (Community Interest)
+  
+  3. **过滤筛选**: 只保留评分 ≥ 6.0 的高质量新闻，最多 20 条
+  
+  4. **内容增强**: 
+     - 搜索网络获取背景知识
+     - 总结社区讨论（HackerNews、Reddit 等评论）
+     - 提取关键技术概念
+  
+  5. **去重合并**: 自动合并来自不同平台的重复内容
+  
+  6. **生成简报**: 创建双语（中英文）日报，包含：
+     - 新闻标题和摘要
+     - AI 评分和推荐理由
+     - 社区讨论精华
+     - 相关背景知识
+  
+  7. **输出格式**: Markdown 格式，便于阅读和分享
+
+# Response messages
+responses:
+  trigger_ack: "🚀 正在启动 Horizon News，为您生成今日科技新闻简报..."
+  in_progress: "⏳ 正在收集和筛选新闻，请稍候..."
+  success: "✅ 今日科技新闻简报已生成！"
+  error: "❌ 生成失败，请检查配置或稍后重试。"
+
+# Metadata
+metadata:
+  category: content
+  tags: [news, tech, ai, curation, bilingual]
+  author: Thysrael
+  license: MIT

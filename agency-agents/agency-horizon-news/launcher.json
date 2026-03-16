@@ -1,0 +1,22 @@
+{
+  "name": "horizon-news-launcher",
+  "version": "1.0.0",
+  "trigger": {
+    "keyword": "1",
+    "channel": "webchat",
+    "sessionLabel": "agency-horizon-news"
+  },
+  "execution": {
+    "mode": "spawn",
+    "agentId": "agency-horizon-news",
+    "task": "Generate today's tech news briefing using Horizon. Steps:\n1. Clone https://github.com/Thysrael/Horizon.git if not exists\n2. Install dependencies (uv sync or pip install -e .)\n3. Configure AI provider (use available API keys)\n4. Run: horizon generate --date today\n5. Collect news from Hacker News, RSS, Reddit, GitHub\n6. AI score and filter (min 6.0, max 20 items)\n7. Generate bilingual summaries (EN/ZH)\n8. Enrich with community discussions and background\n9. Output formatted Markdown report\n10. Display summary and key highlights",
+    "timeoutSeconds": 300,
+    "model": "kimi-k2.5",
+    "thinking": "on"
+  },
+  "responses": {
+    "triggered": "🚀 **Horizon News 已启动！**\n\n正在为您生成今日科技新闻简报...\n\n📡 收集来源: Hacker News, RSS, Reddit, GitHub\n🤖 AI 评分: 技术深度、新颖性、影响力\n🌐 双语输出: 中英文对照\n⏱️ 预计耗时: 2-5 分钟",
+    "completed": "✅ **今日科技新闻简报已生成！**\n\n📄 查看完整报告: [输出文件路径]\n\n💡 提示: 输入 '1' 可随时重新生成最新简报",
+    "failed": "❌ **生成失败**\n\n可能原因:\n- 网络连接问题\n- API 配置错误\n- 依赖安装失败\n\n请检查配置后重试。"
+  }
+}
