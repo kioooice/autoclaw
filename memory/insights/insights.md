@@ -57,6 +57,24 @@
 
 <!-- 需要避免的错误 -->
 
+### Git 强制推送场景（2026-03-13）
+
+**来源**：同步到 GitHub 仓库时遇到历史冲突
+
+**现象**：`git push` 报错 "Updates were rejected because the remote contains work that you do not have locally"
+
+**原因**：本地和远程仓库是独立创建的，commit 历史没有共同起点
+
+**解决方案**：
+1. **强制推送**（本地是最新状态时）：`git push --force`
+2. **合并历史**（需要保留远程内容时）：`git pull --rebase` 或 `git pull --allow-unrelated-histories`
+
+**预防方法**：
+- 克隆仓库后再工作，不要本地新建仓库再连接远程
+- 或本地新建后，先 `git pull --allow-unrelated-histories` 再提交
+
+**适用场景**：任何 Git 推送被拒绝的场景
+
 ---
 
 ## 技术发现

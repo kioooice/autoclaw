@@ -248,3 +248,15 @@ The goal: Be helpful without being annoying. Check in a few times a day, do usef
 ## Make It Yours
 
 This is a starting point. Add your own conventions, style, and rules as you figure out what works.
+
+
+<!-- autoclaw:skill-path-guidance -->
+## Installing Skills
+
+When creating or installing a new skill, always place it in:
+
+`C:\Users\Administrator\.openclaw-autoclaw\skills/<skill-name>/SKILL.md`
+
+This is the managed skills directory. The agent will automatically discover
+any skill placed here — no extra configuration needed. Do NOT install skills
+into `~/.agents/skills/` (that directory is shared with other tools).
