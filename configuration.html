@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Configuration Guide | Horizon Daily</title>
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="Configuration Guide" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="AI-curated daily digest of tech and research news" />
+<meta property="og:description" content="AI-curated daily digest of tech and research news" />
+<link rel="canonical" href="https://thysrael.github.io/Horizon/configuration.html" />
+<meta property="og:url" content="https://thysrael.github.io/Horizon/configuration.html" />
+<meta property="og:site_name" content="Horizon Daily" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Configuration Guide" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"AI-curated daily digest of tech and research news","headline":"Configuration Guide","url":"https://thysrael.github.io/Horizon/configuration.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="preload" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap" as="style" type="text/css" crossorigin>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#157878">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="stylesheet" href="/Horizon/assets/css/style.css?v=18d36e22178098c32b7d36e14f2ff0413d35cc91">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌅</text></svg>">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌅</text></svg>">
+<link rel="shortcut icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌅</text></svg>">
+<link rel="alternate" type="application/rss+xml" title="Horizon Daily RSS (All)" href="/Horizon/feed.xml">
+<link rel="alternate" type="application/atom+xml" title="Horizon Daily RSS (ZH)" href="/Horizon/feed-zh.xml">
+<link rel="alternate" type="application/atom+xml" title="Horizon Daily RSS (EN)" href="/Horizon/feed-en.xml">
+<style>
+.rss-icon{opacity:.6;color:inherit;margin-left:12px;vertical-align:middle;text-decoration:none;transition:all .2s}
+.rss-icon:hover{opacity:1;color:#f26522}
+.rss-icon svg{width:0.9em;height:0.9em;display:inline-block}
+</style>
+  </head>
+  <body>
+    <a id="skip-to-content" href="#content">Skip to the content.</a>
+
+    <header class="page-header" role="banner">
+      <h1 class="project-name">Configuration Guide</h1>
+      <h2 class="project-tagline">AI-curated daily digest of tech and research news</h2>
+      
+        <a href="https://github.com/Thysrael/Horizon" class="btn">View on GitHub</a>
+      
+      
+    </header>
+
+    <main id="content" class="main-content" role="main">
+      <h1 id="configuration-guide">Configuration Guide</h1>
+
+<p>Horizon is configured through two files: a <code class="language-plaintext highlighter-rouge">.env</code> file for API keys and a <code class="language-plaintext highlighter-rouge">data/config.json</code> file for sources, AI provider, and filtering options.</p>
+
+<h2 id="ai-providers">AI Providers</h2>
+
+<p>Configure which AI model scores and summarizes your content.</p>
+
+<p><strong>Anthropic Claude</strong>:</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"ai"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"provider"</span><span class="p">:</span><span class="w"> </span><span class="s2">"anthropic"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"model"</span><span class="p">:</span><span class="w"> </span><span class="s2">"claude-sonnet-4.5-20250929"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"api_key_env"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ANTHROPIC_API_KEY"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>OpenAI</strong>:</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"ai"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"provider"</span><span class="p">:</span><span class="w"> </span><span class="s2">"openai"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"model"</span><span class="p">:</span><span class="w"> </span><span class="s2">"gpt-4"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"api_key_env"</span><span class="p">:</span><span class="w"> </span><span class="s2">"OPENAI_API_KEY"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>Custom Base URL</strong> (for proxies):</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"ai"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"provider"</span><span class="p">:</span><span class="w"> </span><span class="s2">"anthropic"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"base_url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://your-proxy.com/v1"</span><span class="p">,</span><span class="w">
+    </span><span class="err">...</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<h2 id="information-sources">Information Sources</h2>
+
+<p>All sources are configured under the top-level <code class="language-plaintext highlighter-rouge">sources</code> key in <code class="language-plaintext highlighter-rouge">config.json</code>.</p>
+
+<h3 id="github">GitHub</h3>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"sources"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"github"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"user_events"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"username"</span><span class="p">:</span><span class="w"> </span><span class="s2">"gvanrossum"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"repo_releases"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"owner"</span><span class="p">:</span><span class="w"> </span><span class="s2">"python"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"repo"</span><span class="p">:</span><span class="w"> </span><span class="s2">"cpython"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="hacker-news">Hacker News</h3>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"sources"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"hackernews"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"fetch_top_stories"</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"min_score"</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="rss-feeds">RSS Feeds</h3>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"sources"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"rss"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Blog Name"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://example.com/feed.xml"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"category"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ai-ml"</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="reddit">Reddit</h3>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"sources"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"reddit"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"fetch_comments"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"subreddits"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"subreddit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"MachineLearning"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"sort"</span><span class="p">:</span><span class="w"> </span><span class="s2">"hot"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"fetch_limit"</span><span class="p">:</span><span class="w"> </span><span class="mi">25</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"min_score"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">],</span><span class="w">
+      </span><span class="nl">"users"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"username"</span><span class="p">:</span><span class="w"> </span><span class="s2">"spez"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"sort"</span><span class="p">:</span><span class="w"> </span><span class="s2">"new"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"fetch_limit"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">]</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<h2 id="filtering">Filtering</h2>
+
+<p>Content is scored 0-10:</p>
+
+<ul>
+  <li><strong>9-10</strong>: Groundbreaking - Major breakthroughs, paradigm shifts</li>
+  <li><strong>7-8</strong>: High Value - Important developments, deep technical content</li>
+  <li><strong>5-6</strong>: Interesting - Worth knowing but not urgent</li>
+  <li><strong>3-4</strong>: Low Priority - Generic or routine content</li>
+  <li><strong>0-2</strong>: Noise - Spam, off-topic, or trivial</li>
+</ul>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"filtering"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"ai_score_threshold"</span><span class="p">:</span><span class="w"> </span><span class="mf">7.0</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"time_window_hours"</span><span class="p">:</span><span class="w"> </span><span class="mi">24</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">ai_score_threshold</code>: Only include content scoring &gt;= this value</li>
+  <li><code class="language-plaintext highlighter-rouge">time_window_hours</code>: Fetch content from last N hours</li>
+</ul>
+
+<h2 id="environment-variable-substitution">Environment Variable Substitution</h2>
+
+<p>RSS feed URLs support <code class="language-plaintext highlighter-rouge">${VAR_NAME}</code> syntax for secrets. The variable is expanded at runtime from environment variables (or <code class="language-plaintext highlighter-rouge">.env</code> file):</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"LWN.net"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://lwn.net/headlines/full_text?key=${LWN_KEY}"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>This way <code class="language-plaintext highlighter-rouge">config.json</code> can be committed to a public repo without leaking tokens.</p>
+
+
+      <footer class="site-footer">
+        
+          <span class="site-footer-owner"><a href="https://github.com/Thysrael/Horizon">Horizon</a> is maintained by <a href="https://github.com/Thysrael">Thysrael</a>.</span>
+        
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span>
+      </footer>
+    </main>
+  </body>
+</html>

@@ -72,3 +72,31 @@
 ---
 
 *更新规则：新事实追加到对应分类末尾，过时事实标记删除而非移除*
+## OpenClaw 配置 (2026-03-18)
+
+### 模型 Provider
+- **主模型**: OpenRouter Hunter Alpha (免费)
+- **阿里百炼** (coding.dashscope.aliyuncs.com): qwen3.5-plus, qwen3-max, qwen3-coder-next, qwen3-coder-plus, glm-5, glm-4.7, kimi-k2.5, MiniMax-M2.5
+- **智谱** (zai): GLM-5-Turbo (免费, 内部代理)
+- **OpenRouter**: Hunter Alpha, Healer Alpha (可用但未配)
+
+### 配置要点
+- Web 搜索: 已开启
+- WorkspaceOnly: true (文件限制在 workspace)
+- Heartbeat: 2h
+- 文件: C:\Users\Administrator\.openclaw-autoclaw\openclaw.json 和 agents\main\agent\models.json
+
+### 编程习惯
+- 使用 Claude Code 做 Vibe Coding
+- 通过 OpenClaw webchat 聊方案和整理内容
+
+## OpenClaw 踩坑 (2026-03-18)
+
+### 操作规范
+- **配置修改后需要重启 Gateway 时，直接自己重启，不用问用户**
+- Windows 上 openclaw gateway restart 报 SIGUSR1 错误，改用手动 stop + start
+- 编辑 JSON 用增量修改，不用整体重写（防止结构丢失）
+
+### 用户环境
+- 使用梯子软件，全局模式会拖慢国内 API（阿里百炼/智谱）
+- 建议用规则/PAC 模式

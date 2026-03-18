@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Scoring System | Horizon Daily</title>
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="Scoring System" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="AI-curated daily digest of tech and research news" />
+<meta property="og:description" content="AI-curated daily digest of tech and research news" />
+<link rel="canonical" href="https://thysrael.github.io/Horizon/scoring.html" />
+<meta property="og:url" content="https://thysrael.github.io/Horizon/scoring.html" />
+<meta property="og:site_name" content="Horizon Daily" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Scoring System" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"AI-curated daily digest of tech and research news","headline":"Scoring System","url":"https://thysrael.github.io/Horizon/scoring.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="preload" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap" as="style" type="text/css" crossorigin>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#157878">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="stylesheet" href="/Horizon/assets/css/style.css?v=18d36e22178098c32b7d36e14f2ff0413d35cc91">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌅</text></svg>">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌅</text></svg>">
+<link rel="shortcut icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌅</text></svg>">
+<link rel="alternate" type="application/rss+xml" title="Horizon Daily RSS (All)" href="/Horizon/feed.xml">
+<link rel="alternate" type="application/atom+xml" title="Horizon Daily RSS (ZH)" href="/Horizon/feed-zh.xml">
+<link rel="alternate" type="application/atom+xml" title="Horizon Daily RSS (EN)" href="/Horizon/feed-en.xml">
+<style>
+.rss-icon{opacity:.6;color:inherit;margin-left:12px;vertical-align:middle;text-decoration:none;transition:all .2s}
+.rss-icon:hover{opacity:1;color:#f26522}
+.rss-icon svg{width:0.9em;height:0.9em;display:inline-block}
+</style>
+  </head>
+  <body>
+    <a id="skip-to-content" href="#content">Skip to the content.</a>
+
+    <header class="page-header" role="banner">
+      <h1 class="project-name">Scoring System</h1>
+      <h2 class="project-tagline">AI-curated daily digest of tech and research news</h2>
+      
+        <a href="https://github.com/Thysrael/Horizon" class="btn">View on GitHub</a>
+      
+      
+    </header>
+
+    <main id="content" class="main-content" role="main">
+      <h1 id="scoring-system">Scoring System</h1>
+
+<p>After fetching content from all sources, Horizon uses an AI model to score each item on a 0-10 scale. This determines what appears in the daily summary.</p>
+
+<h2 id="pipeline">Pipeline</h2>
+
+<ol>
+  <li><strong>Batch processing</strong> — Items are scored in batches of 10 with a progress bar. Failed items receive a score of 0.</li>
+  <li><strong>Content preparation</strong> — For each item, the content is truncated (800 chars if comments are present, 1000 otherwise) and engagement metrics are assembled from metadata (HN score, Reddit upvote ratio, etc.).</li>
+  <li><strong>AI analysis</strong> — The prepared content is sent to the configured AI model (temperature 0.3) with a system prompt defining the scoring criteria.</li>
+  <li><strong>Response parsing</strong> — The AI response is parsed as JSON (with fallbacks for code-block-wrapped JSON). Each item gets: <code class="language-plaintext highlighter-rouge">ai_score</code> (float), <code class="language-plaintext highlighter-rouge">ai_reason</code> (string), <code class="language-plaintext highlighter-rouge">ai_summary</code> (string), and <code class="language-plaintext highlighter-rouge">ai_tags</code> (list).</li>
+  <li><strong>Retry</strong> — Failed AI calls are retried up to 3 times with exponential backoff (2-10 seconds).</li>
+</ol>
+
+<h2 id="scoring-scale">Scoring Scale</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Score</th>
+      <th>Tier</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>9-10</td>
+      <td>Groundbreaking</td>
+      <td>Major breakthroughs, paradigm shifts, major version releases, significant research breakthroughs</td>
+    </tr>
+    <tr>
+      <td>7-8</td>
+      <td>High Value</td>
+      <td>Important developments, technical deep-dives, novel approaches, insightful analysis, valuable tools</td>
+    </tr>
+    <tr>
+      <td>5-6</td>
+      <td>Interesting</td>
+      <td>Incremental improvements, useful tutorials, moderate community interest</td>
+    </tr>
+    <tr>
+      <td>3-4</td>
+      <td>Low Priority</td>
+      <td>Minor updates, common knowledge, overly promotional</td>
+    </tr>
+    <tr>
+      <td>0-2</td>
+      <td>Noise</td>
+      <td>Spam, off-topic, trivial updates</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="scoring-factors">Scoring Factors</h2>
+
+<p>The AI evaluates each item based on:</p>
+
+<ul>
+  <li><strong>Technical depth and novelty</strong> — original ideas, new techniques, research contributions</li>
+  <li><strong>Potential impact</strong> — how broadly this affects software engineering, AI/ML, or systems research</li>
+  <li><strong>Quality of writing/presentation</strong> — clarity, structure, thoroughness</li>
+  <li><strong>Community discussion</strong> — insightful comments, diverse viewpoints, substantive debates</li>
+  <li><strong>Engagement signals</strong> — high upvotes/favorites paired with substantive discussion (not just raw numbers)</li>
+</ul>
+
+<p>Engagement metadata is source-specific: HN provides score and comment count, Reddit provides upvote ratio and comment count.</p>
+
+<h2 id="filtering">Filtering</h2>
+
+<p>After scoring, items are filtered by <code class="language-plaintext highlighter-rouge">filtering.ai_score_threshold</code> (default: <code class="language-plaintext highlighter-rouge">7.0</code>) and sorted by score descending. Only items meeting the threshold appear in the daily summary.</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"filtering"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"ai_score_threshold"</span><span class="p">:</span><span class="w"> </span><span class="mf">7.0</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"time_window_hours"</span><span class="p">:</span><span class="w"> </span><span class="mi">24</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Items scoring 9.0 or above are featured in the “Today’s Highlights” section of the summary.</p>
+
+<h2 id="enrichment">Enrichment</h2>
+
+<p>Items that pass the score threshold go through a second AI pass for enrichment (<code class="language-plaintext highlighter-rouge">src/ai/enricher.py</code>):</p>
+
+<ol>
+  <li><strong>Concept extraction</strong> — AI identifies 1-3 technical concepts in the item that may need explanation.</li>
+  <li><strong>Web search</strong> — Each concept is searched via DuckDuckGo to gather grounding context.</li>
+  <li><strong>Structured analysis</strong> — The item content and search results are sent to AI, which produces:
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">whats_new</code> — what specifically happened or changed</li>
+      <li><code class="language-plaintext highlighter-rouge">why_it_matters</code> — significance and impact</li>
+      <li><code class="language-plaintext highlighter-rouge">key_details</code> — notable technical details or caveats</li>
+      <li><code class="language-plaintext highlighter-rouge">background</code> — background knowledge for readers without deep domain expertise</li>
+    </ul>
+  </li>
+</ol>
+
+<p>These fields are combined into a <code class="language-plaintext highlighter-rouge">detailed_summary</code> stored in the item’s metadata and used in the final daily summary.</p>
+
+
+      <footer class="site-footer">
+        
+          <span class="site-footer-owner"><a href="https://github.com/Thysrael/Horizon">Horizon</a> is maintained by <a href="https://github.com/Thysrael">Thysrael</a>.</span>
+        
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span>
+      </footer>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Recommendation System | Horizon Daily</title>
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="Recommendation System" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="AI-curated daily digest of tech and research news" />
+<meta property="og:description" content="AI-curated daily digest of tech and research news" />
+<link rel="canonical" href="https://thysrael.github.io/Horizon/recommendations.html" />
+<meta property="og:url" content="https://thysrael.github.io/Horizon/recommendations.html" />
+<meta property="og:site_name" content="Horizon Daily" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Recommendation System" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"AI-curated daily digest of tech and research news","headline":"Recommendation System","url":"https://thysrael.github.io/Horizon/recommendations.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="preload" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap" as="style" type="text/css" crossorigin>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#157878">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="stylesheet" href="/Horizon/assets/css/style.css?v=18d36e22178098c32b7d36e14f2ff0413d35cc91">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌅</text></svg>">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌅</text></svg>">
+<link rel="shortcut icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌅</text></svg>">
+<link rel="alternate" type="application/rss+xml" title="Horizon Daily RSS (All)" href="/Horizon/feed.xml">
+<link rel="alternate" type="application/atom+xml" title="Horizon Daily RSS (ZH)" href="/Horizon/feed-zh.xml">
+<link rel="alternate" type="application/atom+xml" title="Horizon Daily RSS (EN)" href="/Horizon/feed-en.xml">
+<style>
+.rss-icon{opacity:.6;color:inherit;margin-left:12px;vertical-align:middle;text-decoration:none;transition:all .2s}
+.rss-icon:hover{opacity:1;color:#f26522}
+.rss-icon svg{width:0.9em;height:0.9em;display:inline-block}
+</style>
+  </head>
+  <body>
+    <a id="skip-to-content" href="#content">Skip to the content.</a>
+
+    <header class="page-header" role="banner">
+      <h1 class="project-name">Recommendation System</h1>
+      <h2 class="project-tagline">AI-curated daily digest of tech and research news</h2>
+      
+        <a href="https://github.com/Thysrael/Horizon" class="btn">View on GitHub</a>
+      
+      
+    </header>
+
+    <main id="content" class="main-content" role="main">
+      <h1 id="recommendation-system">Recommendation System</h1>
+
+<p>After scoring, Horizon analyzes high-quality items to recommend new sources worth following. Recommendations are appended to the daily summary.</p>
+
+<h2 id="how-it-works">How It Works</h2>
+
+<ol>
+  <li><strong>Filter high-quality items</strong> — Only items with <code class="language-plaintext highlighter-rouge">ai_score &gt;= 8.0</code> are considered.</li>
+  <li><strong>Minimum threshold</strong> — At least 3 high-quality items are required; otherwise no recommendations are generated.</li>
+  <li><strong>Frequency analysis</strong> — Counts authors and source types using frequency counters. Produces top 10 authors and source distribution stats.</li>
+  <li><strong>AI recommendation</strong> — The top 20 high-quality items (with title, score, source type, author, URL, tags) are sent to the AI model (temperature 0.4) along with the frequency analysis.</li>
+  <li><strong>Confidence filtering</strong> — Only recommendations with <code class="language-plaintext highlighter-rouge">confidence &gt;= 0.6</code> are kept.</li>
+</ol>
+
+<h2 id="output-format">Output Format</h2>
+
+<p>Each recommendation contains:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Field</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">source_type</code></td>
+      <td>One of: <code class="language-plaintext highlighter-rouge">github</code>, <code class="language-plaintext highlighter-rouge">hackernews</code>, <code class="language-plaintext highlighter-rouge">rss</code>, <code class="language-plaintext highlighter-rouge">twitter</code>, <code class="language-plaintext highlighter-rouge">reddit</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">identifier</code></td>
+      <td>Username, repository, feed URL, or subreddit name</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">reason</code></td>
+      <td>Why this source is recommended</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">confidence</code></td>
+      <td>Float 0–1, must be &gt;= 0.6 to be included</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">sample_content</code></td>
+      <td>List of example titles from this source</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="ai-criteria">AI Criteria</h2>
+
+<p>The AI recommends sources based on:</p>
+
+<ul>
+  <li>Consistent high-quality output across multiple items</li>
+  <li>Original insights and analysis (not just aggregation)</li>
+  <li>Active publishing cadence</li>
+  <li>Relevance to software engineering, systems research, and AI/ML</li>
+</ul>
+
+<p>It suggests GitHub users/repos, blogs/RSS feeds, Twitter accounts, and Reddit subreddits — only where multiple high-quality samples exist in the current batch.</p>
+
+<h2 id="summary-formatting">Summary Formatting</h2>
+
+<p>Recommendations appear as a <code class="language-plaintext highlighter-rouge">## Recommended Sources</code> section at the end of the daily summary. Each recommendation shows:</p>
+
+<ul>
+  <li>Source type and identifier as a heading</li>
+  <li>Reason text</li>
+  <li>Confidence as a percentage</li>
+  <li>Up to 3 sample content titles as bullet points</li>
+</ul>
+
+
+      <footer class="site-footer">
+        
+          <span class="site-footer-owner"><a href="https://github.com/Thysrael/Horizon">Horizon</a> is maintained by <a href="https://github.com/Thysrael">Thysrael</a>.</span>
+        
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span>
+      </footer>
+    </main>
+  </body>
+</html>

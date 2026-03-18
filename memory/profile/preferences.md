@@ -15,6 +15,10 @@
 - **先规划后执行**：复杂任务先写规划，确认后再执行
 - **优先现成方案**：开发前先搜索是否有现成项目
 - **多电脑同步**：需要跨电脑同步工作状态
+- **需求→代码工作流**：使用 `brainstorming` + `writing-plans` 两步流程
+  1. brainstorming：需求澄清 → 设计文档（`docs/plans/YYYY-MM-DD-<topic>-design.md`）
+  2. writing-plans：设计 → 实现 plan（bite-sized 任务，包含文件路径、完整代码、测试命令）
+  - 生成的 plan 可直接给 Claude 执行代码生成
 
 ## 技术偏好
 
