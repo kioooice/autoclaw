@@ -87,6 +87,36 @@
 
 ---
 
+### OpenClaw Gateway 运维踩坑（2026-03-19）
+
+**来源**：配置模型时遇到的问题
+
+**问题清单**：
+1. **Windows 上 restart 不支持**：`openclaw gateway restart` 报错，因为 SIGUSR1 信号在 Windows 不存在
+   - 解决：用 `stop` + `start`，或在 OpenClaw 应用里重启
+2. **Gateway 重启后配置可能丢失**：重启失败时可能回滚到旧配置
+   - 预防：修改 openclaw.json 后确认 Gateway 正常运行
+3. **模型路由短暂丢失**：重启后可能报 "No API key found for provider xxx"
+   - 解决：手动切换模型恢复
+
+**适用场景**：任何 Gateway 配置修改、模型切换场景
+
+---
+
+### PowerShell 与沙箱限制（2026-03-19）
+
+**来源**：Vibe Coding 教程整理时遇到
+
+**问题**：
+1. **控制台中文乱码**：PowerShell 控制台显示 GBK 编码，文件实际 UTF-8
+   - 解决：不用担心，编辑器里正常显示
+2. **write 工具路径限制**：sandbox 模式下不能写 workspace 外的路径
+   - 解决：先写 workspace，再用 `exec` 复制到目标位置
+
+**适用场景**：Windows 环境下的文件操作、跨目录复制
+
+---
+
 ## AI 系统设计
 
 ### InkOS 多 Agent 协作模式（2026-03-14）
