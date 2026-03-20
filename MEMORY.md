@@ -84,8 +84,7 @@ experiences/*.md → 提取记忆 → 6 类分类 → 去重合并 → 更新 L0
 *暂无*
 
 ### 近期项目（episodic/warm/）
-- CLI-Anything 项目研究（2026-03-14）
-- Agent 记忆系统调研（2026-03-19）
+*暂无*
 
 ### 已归档实体（profile/entities/）
 - InfoCollector 项目（暂停，改用 Obsidian）
