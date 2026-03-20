@@ -87,6 +87,16 @@ experiences/*.md → 提取记忆 → 6 类分类 → 去重合并 → 更新 L0
 - CLI-Anything 项目研究（2026-03-14）
 - Agent 记忆系统调研（2026-03-19）
 
+### 已归档实体（profile/entities/）
+- InfoCollector 项目（暂停，改用 Obsidian）
+
+### 已记录事件（profile/events/）
+- 2026-03-14：Obsidian 配置完成
+
+### 已记录案例（insights/cases/）
+- memory_search 不可用解决方案
+- Windows Gateway restart 失败解决方案
+
 ### 已安装工具
 | 工具 | 用途 |
 |------|------|
