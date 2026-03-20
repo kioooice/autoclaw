@@ -125,6 +125,42 @@
 
 <!-- 需要避免的错误 -->
 
+### Windows Gateway 重启问题（2026-03-18）
+
+**来源**：修改 openclaw.json 后 Gateway 连接问题
+
+**现象**：
+- `openclaw gateway restart` 命令无效
+- Gateway 重启后配置可能被重置
+- 模型 API 找不到（路由短暂丢失）
+
+**原因**：Windows 不支持 SIGUSR1 信号
+
+**解决方案**：
+1. 使用 `openclaw gateway stop` + `openclaw gateway start`
+2. 或直接在 OpenClaw 应用里点击重启
+3. 修改配置后手动切换模型恢复路由
+
+**用户偏好**：后续操作需要重启网关时，直接自己重启，不需要问用户
+
+**适用场景**：任何 Windows 上的 Gateway 重启需求
+
+---
+
+### OpenClaw 会话重复回复 Bug（2026-03-20）
+
+**来源**：所有消息重复输出 10 遍以上
+
+**触发条件**：切换分身后必现（重置配置、重连、切换分身都会触发）
+
+**根因**：OpenClaw v2026.2.25 会话管理 bug — 多会话并发时会话 ID 复用
+
+**解决**：更新到 v2026.3.13 — `npm install -g openclaw@latest`
+
+**教训**：遇到奇怪 bug 先检查是否有更新
+
+**适用场景**：任何 OpenClaw 异常行为排查
+
 ### Git 强制推送场景（2026-03-13）
 
 **来源**：同步到 GitHub 仓库时遇到历史冲突

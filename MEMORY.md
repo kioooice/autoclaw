@@ -84,7 +84,7 @@ experiences/*.md → 提取记忆 → 6 类分类 → 去重合并 → 更新 L0
 *暂无*
 
 ### 近期项目（episodic/warm/）
-*暂无*
+- CLI-Anything 项目研究（2026-03-14）
 
 ### 已归档实体（profile/entities/）
 - InfoCollector 项目（暂停，改用 Obsidian）
@@ -99,7 +99,8 @@ experiences/*.md → 提取记忆 → 6 类分类 → 去重合并 → 更新 L0
 ### 已记录案例（insights/cases/）
 - memory_search 不可用解决方案
 - Windows Gateway restart 失败解决方案
-- 重复回复问题排查（OpenClaw 版本 bug）
+<<<<<<< HEAD
+- 重复回复问题排查（OpenClaw 版本 bug，需更新到 v2026.3.13+）
 - YOLO CPU 部署方案（边缘设备无 GPU）
 
 ### 已安装工具
@@ -109,6 +110,7 @@ experiences/*.md → 提取记忆 → 6 类分类 → 去重合并 → 更新 L0
 | mcporter | MCP 服务转发 |
 | skill-seekers | 文档→AI Skills |
 | agent-reach | AI Agent 互联网能力 |
+| Context Hub | 获取第三方库最新文档（避免 API 幻觉）|
 
 ### 🔄 分身同步（重要）
 
