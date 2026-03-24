@@ -11,6 +11,7 @@
 - memory_search 需要 OpenAI Key → 用 read 替代
 - PowerShell 中文乱码 → 编辑器正常
 - write 工具沙箱限制 → 先写 workspace 再复制
+- 重复回复 10+ 遍 → 升级 OpenClaw 到 v2026.3.13
 
 ## 案例
 见 insights/cases/ 目录。

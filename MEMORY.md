@@ -91,10 +91,13 @@ experiences/*.md → 提取记忆 → 6 类分类 → 去重合并 → 更新 L0
 
 ### 已记录事件（profile/events/）
 - 2026-03-14：Obsidian 配置完成
+- 2026-03-19：记忆系统 v3.0 重构
+- 2026-03-20：Context Hub 技能安装
 
 ### 已记录案例（insights/cases/）
 - memory_search 不可用解决方案
 - Windows Gateway restart 失败解决方案
+- 重复回复问题排查（OpenClaw 版本 bug）
 
 ### 已安装工具
 | 工具 | 用途 |
