@@ -34,6 +34,7 @@
 - [工具] [AI] agent-reach：AI Agent 互联网能力
 - [工具] [MCP] mcporter：MCP 服务转发工具
 - [工具] [技能商店] Skillhub：`skillhub search/install/list/upgrade`
+- [工具] [文档] Context Hub (chub)：获取第三方库/SDK/API 最新文档，避免 AI 编程时的 API 幻觉
 
 ### Skillhub
 - [工具] 安装位置：`~/.skillhub/` + `~/.local/bin/skillhub`
