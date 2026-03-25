@@ -24,17 +24,21 @@
   - 如果存在且时间在 1 小时内 → 读取内容并推送消息 → 删除文件
 - [ ] 检查是否有待处理的反思任务
 - [ ] 检查 memory/experiences/ 是否有需要提炼的内容
+- [ ] **自动学习**：如果当天未执行，运行 `python scripts/auto_learn.py --days 1`
 
 ### 定期任务（每 2-3 天）
 
 - [ ] 执行 SESSION COMMIT：自迭代流程（见下方）
 - [ ] 清理过时的 profile/facts
 - [ ] 合并重复的日常日志
+- [ ] **更新向量索引**：`python scripts/vector_memory_v2.py index`
+- [ ] **整合学习成果**：`python scripts/self_learning.py consolidate`
 
 ### 每周任务
 
 - [ ] 运行归档脚本：`powershell scripts/archive-experiences.ps1`
 - [ ] 检查 archive/ 目录，清理过老的归档文件（超过 90 天）
+- [ ] **导出学习模式**：`python scripts/self_learning.py export`
 
 ---
 

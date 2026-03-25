@@ -1,0 +1,1437 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>铁锈智能识别分析系统 v2.1</title>
+  <script src="https://cdn.jsdelivr.net/npm/opencv.js@4.9.0/dist/opencv.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --danger: #dc2626;
+      --success: #16a34a;
+      --warning: #f59e0b;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+    
+    .container { max-width: 1400px; margin: 0 auto; padding: 24px; }
+    
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      padding: 20px 24px;
+      background: var(--card);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+    }
+    
+    header h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+    
+    header h1 span {
+      background: linear-gradient(135deg, var(--primary), #7c3aed);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .version-badge {
+      font-size: 0.75rem;
+      padding: 4px 8px;
+      background: var(--bg);
+      border-radius: 6px;
+      color: var(--text-muted);
+    }
+    
+    .loading-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(255,255,255,0.95);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.3s;
+    }
+    
+    .loading-overlay.hidden { opacity: 0; pointer-events: none; }
+    
+    .spinner {
+      width: 48px;
+      height: 48px;
+      border: 3px solid var(--border);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin { to { transform: rotate(360deg); } }
+    
+    .loading-text {
+      margin-top: 16px;
+      color: var(--text-muted);
+      font-size: 0.875rem;
+    }
+    
+    .main-grid {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 24px;
+    }
+    
+    @media (max-width: 1024px) {
+      .main-grid { grid-template-columns: 1fr; }
+    }
+    
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    
+    .card {
+      background: var(--card);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      padding: 20px;
+    }
+    
+    .card-title {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 16px;
+    }
+    
+    .upload-area {
+      border: 2px dashed var(--border);
+      border-radius: 10px;
+      padding: 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .upload-area:hover, .upload-area.dragover {
+      border-color: var(--primary);
+      background: rgba(37, 99, 235, 0.04);
+    }
+    
+    .upload-icon {
+      width: 48px;
+      height: 48px;
+      margin: 0 auto 12px;
+      color: var(--text-muted);
+    }
+    
+    .upload-text { font-size: 0.875rem; color: var(--text-muted); }
+    .upload-text strong { color: var(--primary); }
+    
+    #fileInput { display: none; }
+    #batchInput { display: none; }
+    
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 16px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-primary:hover { background: var(--primary-dark); }
+    .btn-danger { background: var(--danger); color: white; }
+    .btn-success { background: var(--success); color: white; }
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+    .btn-outline:hover { background: var(--bg); }
+    .btn-full { width: 100%; }
+    
+    .setting-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .setting-row:last-child { border-bottom: none; }
+    .setting-label { font-size: 0.875rem; }
+    
+    input[type="range"] {
+      width: 100px;
+      accent-color: var(--primary);
+    }
+    
+    select {
+      padding: 6px 10px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.875rem;
+      background: white;
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    
+    .stat-card {
+      padding: 16px;
+      background: var(--bg);
+      border-radius: 8px;
+      text-align: center;
+    }
+    
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--danger);
+    }
+    
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+    
+    .main-content {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    
+    .image-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+    
+    .image-card {
+      background: var(--card);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+    
+    .image-card canvas {
+      width: 100%;
+      height: 200px;
+      object-fit: contain;
+      background: #f1f5f9;
+      display: block;
+    }
+    
+    .image-card-title {
+      padding: 12px 16px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .result-panel {
+      background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+      border: 1px solid #fecaca;
+      border-radius: 10px;
+      padding: 20px;
+    }
+    
+    .result-title {
+      font-size: 0.875rem;
+      color: var(--danger);
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    
+    .result-main {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--danger);
+    }
+    
+    .result-detail {
+      margin-top: 12px;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+    
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      background: var(--card);
+      border-radius: 8px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+    
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+      margin-right: 6px;
+    }
+    
+    .toggle {
+      position: relative;
+      width: 44px;
+      height: 24px;
+      background: var(--border);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    
+    .toggle.active { background: var(--primary); }
+    
+    .toggle::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 20px;
+      height: 20px;
+      background: white;
+      border-radius: 50%;
+      transition: transform 0.2s;
+    }
+    
+    .toggle.active::after { transform: translateX(20px); }
+    
+    .export-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    
+    /* 批量处理样式 */
+    .batch-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .batch-item:last-child { border-bottom: none; }
+    
+    .batch-thumb {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 6px;
+      background: var(--bg);
+    }
+    
+    .batch-info { flex: 1; min-width: 0; }
+    
+    .batch-name {
+      font-size: 0.875rem;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    .batch-status {
+      font-size: 0.75rem;
+      margin-top: 4px;
+    }
+    
+    /* 调试面板 */
+    .debug-panel {
+      background: #1e293b;
+      color: #94a3b8;
+      border-radius: 8px;
+      padding: 12px;
+      font-family: 'Consolas', monospace;
+      font-size: 0.75rem;
+      max-height: 200px;
+      overflow-y: auto;
+      margin-top: 12px;
+    }
+    
+    .debug-panel .success { color: #4ade80; }
+    .debug-panel .warning { color: #fbbf24; }
+    .debug-panel .error { color: #f87171; }
+    .debug-panel .info { color: #60a5fa; }
+  </style>
+</head>
+<body>
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="spinner"></div>
+    <div class="loading-text">正在加载 OpenCV.js...</div>
+  </div>
+
+  <div class="container">
+    <header>
+      <h1><span>铁锈智能识别</span> 分析系统</h1>
+      <span class="version-badge">v2.1 调试版</span>
+    </header>
+
+    <div class="main-grid">
+      <div class="sidebar">
+        <div class="card">
+          <div class="card-title">图片上传</div>
+          <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
+            <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+            <div class="upload-text">拖拽图片或 <strong>点击上传</strong></div>
+          </div>
+          <input type="file" id="fileInput" accept="image/*" multiple>
+          <input type="file" id="batchInput" accept="image/*" multiple webkitdirectory>
+        </div>
+
+        <div class="card">
+          <div class="card-title">算法设置</div>
+          <div class="setting-row">
+            <span class="setting-label">检测模式</span>
+            <select id="detectMode" onchange="reprocess()">
+              <option value="balanced">平衡模式 (推荐)</option>
+              <option value="sensitive">高灵敏度</option>
+              <option value="strict">严格模式</option>
+            </select>
+          </div>
+          <div class="setting-row">
+            <span class="setting-label">最小饱和度</span>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <input type="range" id="minSaturation" min="0" max="100" value="20" oninput="updateSatDisplay()">
+              <input type="number" id="minSaturationNum" min="0" max="100" value="20" style="width: 60px; padding: 4px 8px; border: 1px solid var(--border); border-radius: 4px; font-size: 0.875rem;" onchange="updateSatSlider()">
+              <span style="font-size: 0.75rem; color: var(--text-muted);">%</span>
+            </div>
+          </div>
+          <div class="setting-row">
+            <span class="setting-label">色相范围</span>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <input type="range" id="hueRange" min="10" max="60" value="40" oninput="updateHueDisplay()">
+              <input type="number" id="hueRangeNum" min="10" max="60" value="40" style="width: 60px; padding: 4px 8px; border: 1px solid var(--border); border-radius: 4px; font-size: 0.875rem;" onchange="updateHueSlider()">
+              <span style="font-size: 0.75rem; color: var(--text-muted);">°</span>
+            </div>
+          </div>
+          <div class="setting-row">
+            <span class="setting-label">调试模式</span>
+            <div class="toggle" id="debugToggle" onclick="toggleDebug()"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">检测统计</div>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-value" id="rustPercent">--</div>
+              <div class="stat-label">铁锈占比 %</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="rustArea">--</div>
+              <div class="stat-label">铁锈面积 px²</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="boundaryY">--</div>
+              <div class="stat-label">分界线 Y</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="rustPixels">--</div>
+              <div class="stat-label">锈斑像素</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">导出报告</div>
+          <div class="export-grid">
+            <button class="btn btn-primary" onclick="exportPDF()">导出 PDF</button>
+            <button class="btn btn-success" onclick="exportExcel()">导出 Excel</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="main-content">
+        <!-- Tabs -->
+        <div style="display: flex; gap: 4px; background: var(--bg); padding: 4px; border-radius: 8px; margin-bottom: 16px;">
+          <button class="btn btn-outline" id="tabSingle" onclick="switchTab('single')" style="border-radius: 6px;">单图分析</button>
+          <button class="btn btn-outline" id="tabBatch" onclick="switchTab('batch')" style="border-radius: 6px;">批量处理</button>
+        </div>
+
+        <!-- 单图面板 -->
+        <div id="singlePanel">
+          <div class="image-grid">
+          <div class="image-card">
+            <div class="image-card-title">原始图片</div>
+            <canvas id="canvasOriginal"></canvas>
+          </div>
+          <div class="image-card">
+            <div class="image-card-title">处理结果 (绿色线=分界线)</div>
+            <canvas id="canvasProcessed"></canvas>
+          </div>
+          <div class="image-card">
+            <div class="image-card-title">铁锈标记 (红色=铁锈)</div>
+            <canvas id="canvasMask"></canvas>
+          </div>
+          <div class="image-card">
+            <div class="image-card-title">调试信息</div>
+            <canvas id="canvasDebug"></canvas>
+          </div>
+        </div>
+
+        <div class="result-panel">
+          <div class="result-title">检测结果</div>
+          <div class="result-main" id="mainResult">等待上传图片...</div>
+          <div class="result-detail" id="resultDetail">请上传金属表面图片开始分析</div>
+        </div>
+
+        <!-- 调试面板 -->
+        <div class="debug-panel" id="debugPanel" style="display: none;">
+          <div>调试日志:</div>
+          <div id="debugLog"></div>
+        </div>
+        </div>
+
+        <!-- 批量处理面板 -->
+        <div id="batchPanel" style="display: none;">
+          <div class="card" style="margin-bottom: 16px;">
+            <div class="card-title">批量上传</div>
+            <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+              <button class="btn btn-primary" onclick="document.getElementById('batchInput').click()">选择文件夹</button>
+              <button class="btn btn-outline" onclick="document.getElementById('batchFilesInput').click()">选择多个文件</button>
+              <button class="btn btn-success" onclick="startBatchProcess()" id="batchStartBtn">开始处理</button>
+              <button class="btn btn-danger" onclick="clearBatch()">清空列表</button>
+            </div>
+            <input type="file" id="batchFilesInput" accept="image/*" multiple style="display:none">
+          </div>
+
+          <div class="card" style="margin-bottom: 16px;">
+            <div class="card-title">处理队列 (<span id="batchCount">0</span> 张图片)</div>
+            <div id="batchQueue" style="max-height: 400px; overflow-y: auto;">
+              <div style="text-align: center; color: var(--text-muted); padding: 40px;">
+                请上传图片开始批量处理
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">批量结果</div>
+            <div style="display: flex; gap: 12px;">
+              <button class="btn btn-primary" onclick="exportBatchPDF()">导出 PDF 报告</button>
+              <button class="btn btn-success" onclick="exportBatchExcel()">导出 Excel</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="status-bar">
+          <div>
+            <span class="status-dot"></span>
+            <span id="statusText">OpenCV.js 就绪</span>
+          </div>
+          <div id="processTime">处理时间: --</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ============ 全局状态 ============
+    let cvReady = false;
+    let currentImage = null;
+    let debugMode = false;
+    let detectionResults = {
+      rustPercent: 0,
+      rustArea: 0,
+      rustCount: 0,
+      confidence: 0
+    };
+
+    // ============ 初始化 ============
+    function onOpenCvReady() {
+      cvReady = true;
+      document.querySelector('.loading-overlay').classList.add('hidden');
+      document.getElementById('statusText').textContent = 'OpenCV.js 就绪';
+      console.log('OpenCV.js 加载完成');
+    }
+
+    window.Module = {
+      onRuntimeInitialized: onOpenCvReady
+    };
+
+    setTimeout(() => {
+      if (!cvReady) {
+        cvReady = true;
+        document.querySelector('.loading-overlay').classList.add('hidden');
+      }
+    }, 15000);
+
+    // ============ 调试函数 ============
+    function debugLog(msg, type = 'info') {
+      console.log(msg);
+      if (debugMode) {
+        const panel = document.getElementById('debugLog');
+        const line = document.createElement('div');
+        line.className = type;
+        line.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+        panel.appendChild(line);
+        panel.scrollTop = panel.scrollHeight;
+      }
+    }
+
+    function toggleDebug() {
+      debugMode = !debugMode;
+      document.getElementById('debugToggle').classList.toggle('active');
+      document.getElementById('debugPanel').style.display = debugMode ? 'block' : 'none';
+      if (currentImage) reprocess();
+    }
+
+    // ============ 文件上传 ============
+    const uploadArea = document.getElementById('uploadArea');
+    const fileInput = document.getElementById('fileInput');
+
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+      uploadArea.addEventListener(eventName, e => {
+        e.preventDefault();
+        e.stopPropagation();
+      });
+    });
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+      uploadArea.addEventListener(eventName, () => uploadArea.classList.add('dragover'));
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+      uploadArea.addEventListener(eventName, () => uploadArea.classList.remove('dragover'));
+    });
+
+    uploadArea.addEventListener('drop', e => {
+      if (e.dataTransfer.files.length > 0) {
+        handleFile(e.dataTransfer.files[0]);
+      }
+    });
+
+    fileInput.addEventListener('change', e => {
+      if (e.target.files[0]) {
+        handleFile(e.target.files[0]);
+      }
+    });
+
+    function handleFile(file) {
+      const reader = new FileReader();
+      reader.onload = e => {
+        const img = new Image();
+        img.onload = () => processImage(img);
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function reprocess() {
+      if (currentImage) processImage(currentImage);
+    }
+
+    // ============ 核心处理 ============
+    function processImage(img) {
+      const startTime = performance.now();
+      currentImage = img;
+
+      // 清空调试日志
+      if (debugMode) {
+        document.getElementById('debugLog').innerHTML = '';
+      }
+
+      debugLog(`图片尺寸: ${img.width} x ${img.height}`);
+
+      // 显示原图
+      const ctxOrig = document.getElementById('canvasOriginal').getContext('2d');
+      document.getElementById('canvasOriginal').width = img.width;
+      document.getElementById('canvasOriginal').height = img.height;
+      ctxOrig.drawImage(img, 0, 0);
+
+      // 检测分界线
+      const boundaryY = detectBoundary(img);
+      debugLog(`检测到分界线: Y=${boundaryY} (图片高度 ${img.height})`, 'success');
+      document.getElementById('boundaryY').textContent = boundaryY;
+
+      // 获取参数
+      const mode = document.getElementById('detectMode').value;
+      const minSat = document.getElementById('minSaturation').value / 100;
+      const hueRange = parseInt(document.getElementById('hueRange').value);
+
+      debugLog(`模式: ${mode}, 最小饱和度: ${minSat}, 色相范围: ${hueRange}`);
+
+      // 使用 OpenCV 处理
+      if (cvReady) {
+        advancedDetection(img, boundaryY, mode, minSat, hueRange);
+      } else {
+        simpleDetection(img, boundaryY, minSat, hueRange);
+      }
+
+      const endTime = performance.now();
+      document.getElementById('processTime').textContent = 
+        `处理时间: ${(endTime - startTime).toFixed(0)}ms`;
+    }
+
+    // ============ 分界线检测 ============
+    function detectBoundary(img) {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0);
+
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const data = imageData.data;
+      const w = canvas.width;
+      const h = canvas.height;
+
+      // 逐行计算平均亮度变化
+      const rowBrightness = [];
+      for (let y = 0; y < h; y++) {
+        let sum = 0;
+        const samples = Math.min(w, 100); // 采样加速
+        const step = Math.floor(w / samples);
+        for (let x = 0; x < w; x += step) {
+          const i = (y * w + x) * 4;
+          sum += (data[i] + data[i + 1] + data[i + 2]) / 3;
+        }
+        rowBrightness.push(sum / samples);
+      }
+
+      // 寻找亮度突变最大的位置
+      let maxChange = 0;
+      let boundaryY = Math.floor(h / 3);
+
+      for (let i = 20; i < rowBrightness.length - 20; i++) {
+        // 计算上下区域的平均亮度
+        let upperSum = 0, lowerSum = 0;
+        for (let j = i - 20; j < i; j++) upperSum += rowBrightness[j];
+        for (let j = i; j < i + 20; j++) lowerSum += rowBrightness[j];
+        
+        const change = Math.abs(upperSum / 20 - lowerSum / 20);
+        if (change > maxChange && change > 15) {
+          maxChange = change;
+          boundaryY = i;
+        }
+      }
+
+      debugLog(`亮度变化最大: ${maxChange.toFixed(1)}`);
+
+      // 如果没有明显变化，检测深色分界线
+      if (maxChange < 15) {
+        debugLog('无明显亮度变化，检测深色线条...', 'warning');
+        for (let y = Math.floor(h * 0.2); y < Math.floor(h * 0.6); y++) {
+          let darkCount = 0;
+          for (let x = 0; x < w; x += 10) {
+            const i = (y * w + x) * 4;
+            const brightness = (data[i] + data[i + 1] + data[i + 2]) / 3;
+            if (brightness < 60) darkCount++;
+          }
+          if (darkCount > w / 20) {
+            boundaryY = y;
+            debugLog(`检测到深色线条: Y=${y}`, 'success');
+            break;
+          }
+        }
+      }
+
+      return boundaryY;
+    }
+
+    // ============ OpenCV 高级检测 ============
+    function advancedDetection(img, boundaryY, mode, minSat, hueRange) {
+      try {
+        // 创建临时 canvas
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = img.width;
+        tempCanvas.height = img.height;
+        const tempCtx = tempCanvas.getContext('2d');
+        tempCtx.drawImage(img, 0, 0);
+
+        const src = cv.imread(tempCanvas);
+        const hsv = new cv.Mat();
+        cv.cvtColor(src, hsv, cv.COLOR_RGBA2RGB);
+        cv.cvtColor(hsv, hsv, cv.COLOR_RGB2HSV);
+
+        // 创建上半部分的 mask
+        const upperMask = new cv.Mat.zeros(src.rows, src.cols, cv.CV_8U);
+        for (let y = 0; y < boundaryY; y++) {
+          for (let x = 0; x < src.cols; x++) {
+            upperMask.ucharPtr(y, x)[0] = 255;
+          }
+        }
+
+        // 铁锈颜色检测 - 放宽条件
+        let lowerH, upperH;
+        
+        if (mode === 'sensitive') {
+          // 高灵敏度：更宽的色相范围
+          lowerH = 0;
+          upperH = Math.min(hueRange, 60);
+          minSat = Math.max(0.1, minSat - 0.1);
+        } else if (mode === 'strict') {
+          // 严格模式
+          lowerH = 0;
+          upperH = Math.min(hueRange * 0.6, 30);
+          minSat = minSat + 0.1;
+        } else {
+          // 平衡模式
+          lowerH = 0;
+          upperH = Math.min(hueRange, 45);
+        }
+
+        debugLog(`HSV范围: H=[${lowerH}, ${upperH}], S>${(minSat * 255).toFixed(0)}`);
+
+        // HSV 阈值
+        const lower1 = new cv.Mat(hsv.rows, hsv.cols, hsv.type(), [lowerH, minSat * 255, 30, 0]);
+        const upper1 = new cv.Mat(hsv.rows, hsv.cols, hsv.type(), [upperH, 255, 255, 255]);
+        
+        // 第二个红色范围 (340-360度，OpenCV中是170-180)
+        const lower2 = new cv.Mat(hsv.rows, hsv.cols, hsv.type(), [170, minSat * 255, 30, 0]);
+        const upper2 = new cv.Mat(hsv.rows, hsv.cols, hsv.type(), [180, 255, 255, 255]);
+
+        const mask1 = new cv.Mat();
+        const mask2 = new cv.Mat();
+        const colorMask = new cv.Mat();
+
+        cv.inRange(hsv, lower1, upper1, mask1);
+        cv.inRange(hsv, lower2, upper2, mask2);
+        cv.bitwise_or(mask1, mask2, colorMask);
+
+        // 只保留上半部分
+        const mask = new cv.Mat();
+        cv.bitwise_and(colorMask, upperMask, mask);
+
+        // 形态学处理
+        const kernel = cv.Mat.ones(3, 3, cv.CV_8U);
+        cv.morphologyEx(mask, mask, cv.MORPH_OPEN, kernel);
+        cv.morphologyEx(mask, mask, cv.MORPH_CLOSE, kernel);
+
+        // 统计
+        const rustPixels = cv.countNonZero(mask);
+        const totalUpperPixels = src.cols * boundaryY;
+        const rustPercent = ((rustPixels / totalUpperPixels) * 100).toFixed(2);
+
+        debugLog(`铁锈像素: ${rustPixels} / ${totalUpperPixels}`, rustPixels > 0 ? 'success' : 'error');
+        debugLog(`铁锈占比: ${rustPercent}%`, rustPercent > 0 ? 'success' : 'warning');
+
+        // 创建可视化
+        const result = src.clone();
+        
+        // 画分界线
+        cv.line(result, new cv.Point(0, boundaryY), new cv.Point(src.cols, boundaryY),
+                new cv.Scalar(0, 255, 0, 255), 3);
+
+        // 创建彩色 mask
+        const colorResult = new cv.Mat.zeros(src.rows, src.cols, cv.CV_8UC4);
+        
+        // 复制原图作为背景
+        for (let y = 0; y < src.rows; y++) {
+          for (let x = 0; x < src.cols; x++) {
+            const isRust = mask.ucharPtr(y, x)[0] > 0;
+            if (isRust) {
+              // 铁锈区域：红色标记
+              colorResult.ucharPtr(y, x)[0] = 255;
+              colorResult.ucharPtr(y, x)[1] = 0;
+              colorResult.ucharPtr(y, x)[2] = 0;
+              colorResult.ucharPtr(y, x)[3] = 180;
+            } else if (y < boundaryY) {
+              // 上半部分非铁锈：暗色显示
+              colorResult.ucharPtr(y, x)[0] = Math.floor(src.ucharPtr(y, x)[0] * 0.5);
+              colorResult.ucharPtr(y, x)[1] = Math.floor(src.ucharPtr(y, x)[1] * 0.5);
+              colorResult.ucharPtr(y, x)[2] = Math.floor(src.ucharPtr(y, x)[2] * 0.5);
+              colorResult.ucharPtr(y, x)[3] = 255;
+            } else {
+              // 下半部分：灰色
+              colorResult.ucharPtr(y, x)[0] = 128;
+              colorResult.ucharPtr(y, x)[1] = 128;
+              colorResult.ucharPtr(y, x)[2] = 128;
+              colorResult.ucharPtr(y, x)[3] = 100;
+            }
+          }
+        }
+        cv.line(colorResult, new cv.Point(0, boundaryY), new cv.Point(src.cols, boundaryY),
+                new cv.Scalar(0, 255, 0, 255), 3);
+
+        // 调试画布 - 显示 HSV 各通道
+        if (debugMode) {
+          const debugCanvas = document.getElementById('canvasDebug');
+          debugCanvas.width = src.cols;
+          debugCanvas.height = src.rows;
+          
+          // 显示 mask
+          cv.imshow('canvasDebug', mask);
+        }
+
+        // 显示结果
+        cv.imshow('canvasProcessed', result);
+        cv.imshow('canvasMask', colorResult);
+
+        // 更新统计
+        document.getElementById('rustPercent').textContent = rustPercent;
+        document.getElementById('rustArea').textContent = rustPixels;
+        document.getElementById('rustPixels').textContent = rustPixels;
+
+        document.getElementById('mainResult').textContent = `铁锈占比: ${rustPercent}%`;
+        document.getElementById('resultDetail').textContent = 
+          `分界线: Y=${boundaryY}, 铁锈像素: ${rustPixels}`;
+
+        detectionResults = {
+          rustPercent: parseFloat(rustPercent),
+          rustArea: rustPixels,
+          rustCount: '-',
+          confidence: mode === 'sensitive' ? 75 : mode === 'strict' ? 90 : 85
+        };
+
+        // 释放内存
+        src.delete(); hsv.delete(); mask.delete(); upperMask.delete();
+        colorMask.delete(); mask1.delete(); mask2.delete();
+        lower1.delete(); upper1.delete(); lower2.delete(); upper2.delete();
+        kernel.delete(); result.delete(); colorResult.delete();
+
+      } catch (e) {
+        console.error('OpenCV 处理错误:', e);
+        debugLog(`错误: ${e.message}`, 'error');
+        simpleDetection(img, boundaryY, minSat, hueRange);
+      }
+    }
+
+    // ============ 简单检测 (备用) ============
+    function simpleDetection(img, boundaryY, minSat, hueRange) {
+      const canvas = document.getElementById('canvasProcessed');
+      const canvasMask = document.getElementById('canvasMask');
+      
+      const ctx = canvas.getContext('2d');
+      const ctxMask = canvasMask.getContext('2d');
+
+      canvas.width = img.width;
+      canvas.height = img.height;
+      canvasMask.width = img.width;
+      canvasMask.height = img.height;
+
+      ctx.drawImage(img, 0, 0);
+      ctxMask.drawImage(img, 0, 0);
+
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const maskData = ctxMask.getImageData(0, 0, canvasMask.width, canvasMask.height);
+      const data = imageData.data;
+      const mask = maskData.data;
+
+      const w = canvas.width;
+      let rustPixels = 0;
+      let analyzedPixels = 0;
+
+      // 画分界线
+      ctx.strokeStyle = '#00ff00';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(0, boundaryY);
+      ctx.lineTo(w, boundaryY);
+      ctx.stroke();
+
+      // 检测铁锈
+      for (let y = 0; y < boundaryY; y++) {
+        for (let x = 0; x < w; x++) {
+          const i = (y * w + x) * 4;
+          const r = data[i], g = data[i + 1], b = data[i + 2];
+          
+          analyzedPixels++;
+
+          // HSV 转换
+          const max = Math.max(r, g, b);
+          const min = Math.min(r, g, b);
+          const d = max - min;
+          const s = max === 0 ? 0 : d / max;
+
+          let h = 0;
+          if (d !== 0) {
+            if (max === r) h = ((g - b) / d + (g < b ? 6 : 0)) / 6;
+            else if (max === g) h = ((b - r) / d + 2) / 6;
+            else h = ((r - g) / d + 4) / 6;
+          }
+          h = h * 360;
+
+          // 简化的铁锈判断
+          const isRustHue = (h >= 0 && h <= hueRange) || (h >= 340);
+          const isRustSat = s > minSat;
+          const isRedDominant = r > g && r > b;
+
+          if (isRustHue && isRustSat && isRedDominant) {
+            rustPixels++;
+            mask[i] = 255;
+            mask[i + 1] = 0;
+            mask[i + 2] = 0;
+            mask[i + 3] = 180;
+          } else if (y < boundaryY) {
+            mask[i] = Math.floor(data[i] * 0.5);
+            mask[i + 1] = Math.floor(data[i + 1] * 0.5);
+            mask[i + 2] = Math.floor(data[i + 2] * 0.5);
+            mask[i + 3] = 255;
+          }
+        }
+      }
+
+      // 下半部分灰色
+      for (let y = boundaryY; y < canvas.height; y++) {
+        for (let x = 0; x < w; x++) {
+          const i = (y * w + x) * 4;
+          mask[i] = 128;
+          mask[i + 1] = 128;
+          mask[i + 2] = 128;
+          mask[i + 3] = 100;
+        }
+      }
+
+      ctxMask.putImageData(maskData, 0, 0);
+      ctxMask.strokeStyle = '#00ff00';
+      ctxMask.lineWidth = 3;
+      ctxMask.beginPath();
+      ctxMask.moveTo(0, boundaryY);
+      ctxMask.lineTo(w, boundaryY);
+      ctxMask.stroke();
+
+      const rustPercent = ((rustPixels / analyzedPixels) * 100).toFixed(2);
+
+      document.getElementById('rustPercent').textContent = rustPercent;
+      document.getElementById('rustArea').textContent = rustPixels;
+      document.getElementById('rustPixels').textContent = rustPixels;
+
+      document.getElementById('mainResult').textContent = `铁锈占比: ${rustPercent}%`;
+      document.getElementById('resultDetail').textContent = 
+        `分界线: Y=${boundaryY}, 铁锈像素: ${rustPixels}`;
+
+      debugLog(`简单模式: ${rustPixels} 像素, ${rustPercent}%`);
+    }
+
+    // 初始化标签页
+    switchTab('single');
+
+    // 饱和度滑块和输入框同步
+    function updateSatDisplay() {
+      const slider = document.getElementById('minSaturation');
+      const num = document.getElementById('minSaturationNum');
+      num.value = slider.value;
+      reprocess();
+    }
+
+    function updateSatSlider() {
+      const slider = document.getElementById('minSaturation');
+      const num = document.getElementById('minSaturationNum');
+      let val = parseInt(num.value) || 0;
+      val = Math.max(0, Math.min(100, val));
+      slider.value = val;
+      num.value = val;
+      reprocess();
+    }
+
+    // 色相范围滑块和输入框同步
+    function updateHueDisplay() {
+      const slider = document.getElementById('hueRange');
+      const num = document.getElementById('hueRangeNum');
+      num.value = slider.value;
+      reprocess();
+    }
+
+    function updateHueSlider() {
+      const slider = document.getElementById('hueRange');
+      const num = document.getElementById('hueRangeNum');
+      let val = parseInt(num.value) || 10;
+      val = Math.max(10, Math.min(60, val));
+      slider.value = val;
+      num.value = val;
+      reprocess();
+    }
+    function exportPDF() {
+      if (!currentImage) {
+        alert('请先上传图片进行分析');
+        return;
+      }
+
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      // 标题
+      doc.setFontSize(20);
+      doc.text('Rust Detection Report', 20, 20);
+
+      doc.setFontSize(12);
+      doc.text(`Generated: ${new Date().toLocaleString()}`, 20, 35);
+
+      // 统计数据
+      doc.setFontSize(14);
+      doc.text('Detection Results', 20, 55);
+
+      doc.setFontSize(11);
+      doc.text(`Rust Percentage: ${detectionResults.rustPercent}%`, 20, 70);
+      doc.text(`Rust Area: ${detectionResults.rustArea} pixels`, 20, 82);
+      doc.text(`Confidence: ${detectionResults.confidence}%`, 20, 94);
+
+      // 原图
+      const origData = document.getElementById('canvasOriginal').toDataURL('image/jpeg', 0.8);
+      doc.addImage(origData, 'JPEG', 20, 110, 80, 60);
+
+      // 结果图
+      const maskData = document.getElementById('canvasMask').toDataURL('image/jpeg', 0.8);
+      doc.addImage(maskData, 'JPEG', 110, 110, 80, 60);
+
+      // 保存
+      doc.save(`rust_report_${Date.now()}.pdf`);
+    }
+
+    function exportExcel() {
+      if (!currentImage) {
+        alert('请先上传图片进行分析');
+        return;
+      }
+
+      const data = [{
+        '文件名': '单张图片',
+        '铁锈占比 (%)': detectionResults.rustPercent,
+        '铁锈面积 (px)': detectionResults.rustArea,
+        '置信度 (%)': detectionResults.confidence,
+        '检测时间': new Date().toLocaleString()
+      }];
+
+      const ws = XLSX.utils.json_to_sheet(data);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, '铁锈分析');
+
+      XLSX.writeFile(wb, `rust_analysis_${Date.now()}.xlsx`);
+    }
+
+    // ============ 批量处理 ============
+    let batchImages = [];
+    let batchResults = [];
+    let batchProcessing = false;
+
+    document.getElementById('batchInput').addEventListener('change', e => {
+      handleBatchFiles(e.target.files);
+    });
+
+    document.getElementById('batchFilesInput').addEventListener('change', e => {
+      handleBatchFiles(e.target.files);
+    });
+
+    function handleBatchFiles(files) {
+      const queue = document.getElementById('batchQueue');
+      
+      Array.from(files).forEach((file, index) => {
+        if (file.type.startsWith('image/')) {
+          const reader = new FileReader();
+          reader.onload = e => {
+            const img = new Image();
+            img.onload = () => {
+              batchImages.push({
+                name: file.name,
+                image: img,
+                status: 'pending',
+                result: null
+              });
+
+              // 添加到队列显示
+              const item = document.createElement('div');
+              item.className = 'batch-item';
+              item.id = `batch-item-${batchImages.length - 1}`;
+              item.innerHTML = `
+                <img src="${e.target.result}" class="batch-thumb">
+                <div class="batch-info">
+                  <div class="batch-name">${file.name}</div>
+                  <div class="batch-status" style="color: var(--text-muted);">等待处理</div>
+                </div>
+              `;
+              
+              // 清空提示文字
+              if (batchImages.length === 1) {
+                queue.innerHTML = '';
+              }
+              queue.appendChild(item);
+              
+              document.getElementById('batchCount').textContent = batchImages.length;
+            };
+            img.src = e.target.result;
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+
+      switchTab('batch');
+    }
+
+    async function startBatchProcess() {
+      if (batchImages.length === 0) {
+        alert('请先上传图片');
+        return;
+      }
+
+      if (batchProcessing) {
+        alert('正在处理中，请等待');
+        return;
+      }
+
+      batchProcessing = true;
+      batchResults = [];
+      document.getElementById('batchStartBtn').disabled = true;
+      document.getElementById('batchStartBtn').textContent = '处理中...';
+
+      const mode = document.getElementById('detectMode').value;
+      const minSat = document.getElementById('minSaturation').value / 100;
+      const hueRange = parseInt(document.getElementById('hueRange').value);
+
+      for (let i = 0; i < batchImages.length; i++) {
+        const item = batchImages[i];
+        const queueItem = document.getElementById(`batch-item-${i}`);
+        const statusDiv = queueItem.querySelector('.batch-status');
+
+        statusDiv.textContent = '处理中...';
+        statusDiv.style.color = 'var(--warning)';
+
+        await new Promise(resolve => {
+          setTimeout(() => {
+            try {
+              const result = processImageForBatch(item.image, mode, minSat, hueRange);
+              item.result = result;
+              item.status = 'done';
+              batchResults.push({
+                name: item.name,
+                ...result
+              });
+
+              statusDiv.innerHTML = `完成 - <span style="color: var(--danger); font-weight: 600;">${result.rustPercent}%</span>`;
+            } catch (e) {
+              item.status = 'error';
+              statusDiv.textContent = '处理失败';
+              statusDiv.style.color = 'var(--danger)';
+            }
+            resolve();
+          }, 50);
+        });
+      }
+
+      batchProcessing = false;
+      document.getElementById('batchStartBtn').disabled = false;
+      document.getElementById('batchStartBtn').textContent = '开始处理';
+      alert(`批量处理完成！共处理 ${batchImages.length} 张图片`);
+    }
+
+    function processImageForBatch(img, mode, minSat, hueRange) {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0);
+
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const data = imageData.data;
+      const w = canvas.width;
+      const h = canvas.height;
+
+      // 检测分界线（简化版）
+      const boundaryY = Math.floor(h / 3);
+
+      let rustPixels = 0;
+      let analyzedPixels = 0;
+
+      for (let y = 0; y < boundaryY; y++) {
+        for (let x = 0; x < w; x++) {
+          const i = (y * w + x) * 4;
+          const r = data[i], g = data[i + 1], b = data[i + 2];
+
+          analyzedPixels++;
+
+          // HSV 转换
+          const max = Math.max(r, g, b);
+          const min = Math.min(r, g, b);
+          const d = max - min;
+          const s = max === 0 ? 0 : d / max;
+
+          let hue = 0;
+          if (d !== 0) {
+            if (max === r) hue = ((g - b) / d + (g < b ? 6 : 0)) / 6;
+            else if (max === g) hue = ((b - r) / d + 2) / 6;
+            else hue = ((r - g) / d + 4) / 6;
+          }
+          hue = hue * 360;
+
+          const isRustHue = (hue >= 0 && hue <= hueRange) || (hue >= 340);
+          const isRustSat = s > minSat;
+          const isRedDominant = r > g && r > b;
+
+          if (isRustHue && isRustSat && isRedDominant) {
+            rustPixels++;
+          }
+        }
+      }
+
+      return {
+        rustPercent: parseFloat(((rustPixels / analyzedPixels) * 100).toFixed(2)),
+        rustArea: rustPixels,
+        width: w,
+        height: h,
+        boundaryY: boundaryY,
+        timestamp: new Date().toLocaleString()
+      };
+    }
+
+    function clearBatch() {
+      batchImages = [];
+      batchResults = [];
+      document.getElementById('batchQueue').innerHTML = `
+        <div style="text-align: center; color: var(--text-muted); padding: 40px;">
+          请上传图片开始批量处理
+        </div>
+      `;
+      document.getElementById('batchCount').textContent = '0';
+    }
+
+    function switchTab(tab) {
+      document.getElementById('singlePanel').style.display = tab === 'single' ? 'block' : 'none';
+      document.getElementById('batchPanel').style.display = tab === 'batch' ? 'block' : 'none';
+      
+      document.getElementById('tabSingle').style.background = tab === 'single' ? 'var(--card)' : 'transparent';
+      document.getElementById('tabSingle').style.boxShadow = tab === 'single' ? 'var(--shadow)' : 'none';
+      document.getElementById('tabBatch').style.background = tab === 'batch' ? 'var(--card)' : 'transparent';
+      document.getElementById('tabBatch').style.boxShadow = tab === 'batch' ? 'var(--shadow)' : 'none';
+    }
+
+    function exportBatchPDF() {
+      if (batchResults.length === 0) {
+        alert('没有批量处理结果');
+        return;
+      }
+
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      // 标题
+      doc.setFontSize(20);
+      doc.text('Rust Detection Batch Report', 20, 20);
+
+      doc.setFontSize(12);
+      doc.text(`Generated: ${new Date().toLocaleString()}`, 20, 35);
+      doc.text(`Total Images: ${batchResults.length}`, 20, 47);
+
+      // 统计表
+      doc.setFontSize(14);
+      doc.text('Summary', 20, 65);
+
+      let y = 80;
+      doc.setFontSize(10);
+      
+      // 表头
+      doc.text('File Name', 20, y);
+      doc.text('Rust %', 120, y);
+      doc.text('Area (px)', 150, y);
+      y += 8;
+
+      doc.line(20, y - 2, 190, y - 2);
+
+      // 数据行
+      batchResults.forEach((result, index) => {
+        if (y > 270) {
+          doc.addPage();
+          y = 20;
+        }
+        const name = result.name.length > 30 ? result.name.substring(0, 27) + '...' : result.name;
+        doc.text(name, 20, y);
+        doc.text(result.rustPercent.toFixed(2) + '%', 120, y);
+        doc.text(result.rustArea.toString(), 150, y);
+        y += 7;
+      });
+
+      // 统计摘要
+      y += 10;
+      const avgRust = batchResults.reduce((sum, r) => sum + r.rustPercent, 0) / batchResults.length;
+      const maxRust = Math.max(...batchResults.map(r => r.rustPercent));
+      const minRust = Math.min(...batchResults.map(r => r.rustPercent));
+
+      doc.setFontSize(12);
+      doc.text(`Average Rust: ${avgRust.toFixed(2)}%`, 20, y);
+      doc.text(`Max: ${maxRust.toFixed(2)}%`, 100, y);
+      doc.text(`Min: ${minRust.toFixed(2)}%`, 150, y);
+
+      doc.save(`rust_batch_report_${Date.now()}.pdf`);
+    }
+
+    function exportBatchExcel() {
+      if (batchResults.length === 0) {
+        alert('没有批量处理结果');
+        return;
+      }
+
+      const data = batchResults.map(r => ({
+        '文件名': r.name,
+        '铁锈占比 (%)': r.rustPercent,
+        '铁锈面积 (px)': r.rustArea,
+        '图片宽度': r.width,
+        '图片高度': r.height,
+        '分界线位置': r.boundaryY,
+        '检测时间': r.timestamp
+      }));
+
+      // 添加汇总行
+      const avgRust = batchResults.reduce((sum, r) => sum + r.rustPercent, 0) / batchResults.length;
+      data.push({
+        '文件名': '--- 汇总 ---',
+        '铁锈占比 (%)': avgRust.toFixed(2),
+        '铁锈面积 (px)': '',
+        '图片宽度': '',
+        '图片高度': '',
+        '分界线位置': '',
+        '检测时间': ''
+      });
+
+      const ws = XLSX.utils.json_to_sheet(data);
+      
+      // 设置列宽
+      ws['!cols'] = [
+        { wch: 35 },
+        { wch: 15 },
+        { wch: 15 },
+        { wch: 12 },
+        { wch: 12 },
+        { wch: 12 },
+        { wch: 20 }
+      ];
+
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, '铁锈批量分析');
+
+      XLSX.writeFile(wb, `rust_batch_analysis_${Date.now()}.xlsx`);
+    }
+  </script>
+</body>
+</html>

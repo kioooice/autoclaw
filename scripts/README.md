@@ -1,99 +1,118 @@
-# Memory Maintenance Scripts
+# 向量记忆系统 & 自学习系统
 
-记忆系统维护脚本。
+## 快速开始
 
-## archive-experiences.ps1
+### 向量记忆系统
 
-自动归档 30 天前的 experiences。
+```bash
+# 建立索引
+python scripts/vector_memory_v2.py index
 
-```powershell
-# archive-experiences.ps1
-# 用法: .\scripts\archive-experiences.ps1
+# 搜索
+python scripts/vector_memory_v2.py search "查询内容"
 
-$workspace = $env:USERPROFILE + "\.openclaw-autoclaw\workspace"
-$experiencesDir = "$workspace\memory\experiences"
-$archiveDir = "$experiencesDir\archive"
-$thresholdDays = 30
-
-# 创建归档目录
-if (-not (Test-Path $archiveDir)) {
-    New-Item -ItemType Directory -Path $archiveDir -Force | Out-Null
-    Write-Host "Created archive directory: $archiveDir"
-}
-
-# 获取当前日期
-$now = Get-Date
-$threshold = $now.AddDays(-$thresholdDays)
-
-# 查找需要归档的文件
-$filesToArchive = Get-ChildItem -Path $experiencesDir -Filter "*.md" -File | Where-Object {
-    $_.Name -match "^\d{4}-\d{2}-\d{2}\.md$"
-}
-
-$archived = 0
-foreach ($file in $filesToArchive) {
-    # 从文件名解析日期
-    if ($file.Name -match "^(\d{4})-(\d{2})-(\d{2})\.md$") {
-        $fileDate = [DateTime]::new([int]$matches[1], [int]$matches[2], [int]$matches[3])
-        
-        if ($fileDate -lt $threshold) {
-            $destPath = "$archiveDir\$($file.Name)"
-            Move-Item -Path $file.FullName -Destination $destPath -Force
-            Write-Host "Archived: $($file.Name)"
-            $archived++
-        }
-    }
-}
-
-Write-Host "`nSummary: Archived $archived file(s) older than $thresholdDays days"
+# 查看状态
+python scripts/vector_memory_v2.py status
 ```
 
-## reflect.ps1
+### 自学习系统
 
-执行反思流程，提炼 insights。
+```bash
+# 学习成功模式
+python scripts/self_learning.py learn "模式内容" success
 
-```powershell
-# reflect.ps1
-# 用法: .\scripts\reflect.ps1
+# 学习失败教训
+python scripts/self_learning.py learn "错误模式" failure
 
-$workspace = $env:USERPROFILE + "\.openclaw-autoclaw\workspace"
-$experiencesDir = "$workspace\memory\experiences"
-$insightsFile = "$workspace\memory\insights\insights.md"
+# 查看已学模式
+python scripts/self_learning.py patterns
 
-Write-Host "=== Memory Reflection ==="
-Write-Host "Analyzing recent experiences..."
+# 保护重要模式
+python scripts/self_learning.py protect <id>
 
-# 列出近 7 天的 experiences
-$recentFiles = Get-ChildItem -Path $experiencesDir -Filter "*.md" -File | Where-Object {
-    $_.Name -match "^\d{4}-\d{2}-\d{2}\.md$"
-} | Sort-Object Name -Descending | Select-Object -First 7
+# 整合学习成果
+python scripts/self_learning.py consolidate
 
-Write-Host "`nRecent experiences to review:"
-foreach ($f in $recentFiles) {
-    Write-Host "  - $($f.Name)"
-}
+# 查看统计
+python scripts/self_learning.py stats
 
-Write-Host "`n=== Reflection Checklist ==="
-Write-Host "1. Read each experience file"
-Write-Host "2. Identify patterns and lessons"
-Write-Host "3. Update insights/insights.md"
-Write-Host "4. Mark processed experiences"
-Write-Host "`nRun this manually during Heartbeat or when requested."
+# 导出模式
+python scripts/self_learning.py export
 ```
+
+### 自动学习
+
+```bash
+# 从近 7 天经历中自动学习
+python scripts/auto_learn.py --days 7
+
+# 预览模式（不实际记录）
+python scripts/auto_learn.py --days 7 --dry-run
+
+# 会话结束钩子（学习 + 索引 + 整合）
+python scripts/session_end_hook.py
+```
+
+## 自动提取内容
+
+自动学习会从经历文件中提取：
+
+| 类型 | 关键词 |
+|------|--------|
+| **解决方案** | 设置、安装、配置、解决 |
+| **问题诊断** | 原因、根因、因为、由于 |
+| **最佳实践** | 建议、推荐、注意、教训 |
+| **成功标记** | ✅、完成、解决 |
+| **失败标记** | ❌、失败、错误 |
+
+## 文件位置
+
+```
+memory/
+├── .vectors/
+│   ├── memory.db      # 向量数据库
+│   └── learning.db    # 自学习数据库
+├── insights/
+│   └── patterns.json  # 导出的模式
+└── ...
+```
+
+## 在对话中使用
+
+### 搜索记忆
+
+当需要查找相关信息时：
+
+```
+python scripts/vector_memory_v2.py search "用户的偏好"
+python scripts/vector_memory_v2.py search "最近的错误"
+```
+
+### 记录学习
+
+当完成任务后，记录学到的经验：
+
+```bash
+# 成功的模式
+python scripts/self_learning.py learn "解决方案描述" success
+
+# 失败的教训
+python scripts/self_learning.py learn "错误原因描述" failure
+```
+
+## EWC++ 防遗忘机制
+
+- **成功**：重要性 +0.05，EWC 权重 +0.1
+- **失败**：重要性 -0.025，EWC 权重 -0.05
+- **受保护**：衰减速度减半
+- **长期未用**：自动衰减
+
+## 下一步优化
+
+1. **自动索引**：在 HEARTBEAT 中自动调用 `vector_memory_v2.py index`
+2. **自动学习**：在对话结束时自动调用 `self_learning.py learn`
+3. **集成到 AGENTS.md**：在启动时显示自学习统计
 
 ---
 
-## Cron / Heartbeat 集成
-
-在 HEARTBEAT.md 中添加：
-
-```markdown
-### 每周执行
-
-- [ ] 运行 `powershell scripts/archive-experiences.ps1` 归档旧 experiences
-- [ ] 运行反思流程，更新 insights
-```
-
----
-
-*Created: 2026-03-13*
+*创建于 2026-03-25*

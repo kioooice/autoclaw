@@ -54,9 +54,9 @@ git pull
 
 详细协议见 `memory/AGENT-SYNC.md`
 
-## Memory System (Biomimetic)
+## Memory System (Biomimetic + Vector)
 
-采用仿生记忆模型，灵感来自 Hindsight 项目。详细结构见 `memory/STRUCTURE.md`。
+采用仿生记忆模型 + HNSW 向量索引，融合 Ruflo 设计理念。
 
 ### 三层记忆架构
 
@@ -65,6 +65,9 @@ memory/
 ├── world/           → World（世界事实）：客观知识、用户偏好
 ├── experiences/     → Experiences（经历）：我发生了什么
 ├── insights/        → Mental Models（心智模型）：反思后的理解
+├── .vectors/        → 向量索引（HNSW + SQLite）
+│   ├── memory.db    → 向量数据库
+│   └── learning.db  → 自学习系统
 └── YYYY-MM-DD.md    → Daily logs（原始记录）
 ```
 
@@ -72,8 +75,85 @@ memory/
 
 1. Read `SOUL.md` — this is who you are
 2. Read `USER.md` — this is who you're helping
-3. 用 `memory_search` 检索相关记忆
+3. 用向量搜索检索相关记忆
 4. **If in MAIN SESSION**: Read `MEMORY.md`
+
+### 🔍 向量记忆系统（NEW）
+
+**语义搜索，不是关键词匹配**
+
+```bash
+# 建立索引
+python scripts/vector_memory.py index
+
+# 语义搜索
+python scripts/vector_memory.py search "用户偏好"
+python scripts/vector_memory.py search "最近的错误"
+
+# 查看状态
+python scripts/vector_memory.py status
+```
+
+**特点**：
+- HNSW 索引，150x+ 搜索加速
+- 本地 ONNX 模型（3ms 嵌入）
+- 自动索引 memory/ 目录
+
+### 🧠 自学习系统（NEW）
+
+**自动学习模式，EWC++ 防遗忘**
+
+```bash
+# 学习成功模式
+python scripts/self_learning.py learn "模式内容" success
+
+# 学习失败教训
+python scripts/self_learning.py learn "错误模式" failure
+
+# 查看已学模式
+python scripts/self_learning.py patterns
+
+# 保护重要模式
+python scripts/self_learning.py protect <id>
+
+# 整合学习成果
+python scripts/self_learning.py consolidate
+
+# 查看统计
+python scripts/self_learning.py stats
+```
+
+**EWC++ 机制**：
+- 成功的模式重要性 +0.05
+- 失败的模式重要性 -0.025
+- 受保护的模式衰减更慢
+- 长期未用的模式自动衰减
+
+### 🔄 自动学习（NEW）
+
+**会话结束时自动记录学习**
+
+```bash
+# 手动触发会话结束学习
+python scripts/session_end_hook.py
+
+# 或分开执行：
+python scripts/auto_learn.py              # 从今天经历中学习
+python scripts/auto_learn.py --days 3     # 从近 3 天经历中学习
+python scripts/auto_learn.py --dry-run    # 预览不执行
+```
+
+**自动提取内容**：
+- 技术解决方案（设置、安装、配置）
+- 问题诊断（原因、因为、由于）
+- 最佳实践（建议、推荐、注意）
+- 经验总结（学到、发现、记住）
+
+**触发时机**：
+- 用户请求"结束会话"/"总结"
+- 每日心跳时自动执行
+- 手动运行脚本
+- 长期未用的模式自动衰减
 
 ### 记忆操作
 
@@ -81,15 +161,16 @@ memory/
 - 用户偏好/项目知识 → `memory/world/facts.md`
 - 经历事件 → `memory/experiences/YYYY-MM-DD.md`
 - 提炼洞察 → `memory/insights/insights.md`
+- **新：可学习模式 → `self_learning.py learn`**
 
 **RECALL（检索）**：对话中检索相关记忆
-- 用 `memory_search` 搜索关键词
-- 用 `memory_get` 精读片段
+- **新：向量语义搜索 → `vector_memory.py search`**
+- 传统关键词搜索 → 直接读取文件
 
 **REFLECT（反思）**：定期提炼规律
 - 审视近期 experiences
 - 更新 insights
-- 清理过时的 world/facts
+- **新：整合学习成果 → `self_learning.py consolidate`**
 
 ### 📝 Write It Down - No "Mental Notes"!
 

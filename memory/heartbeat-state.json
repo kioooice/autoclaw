@@ -3,7 +3,8 @@
                        "email":  null,
                        "calendar":  null,
                        "weather":  null,
-                       "reflection":  "2026-03-23T16:51:00+08:00",
-                       "gitSync":  "2026-03-23T16:51:00+08:00"
+                       "reflection":  "2026-03-25T17:16:00+08:00",
+                       "gitSync":  "2026-03-25T17:16:00+08:00",
+                       "heartbeat":  "2026-03-25T15:16:00+08:00"
                    }
 }
