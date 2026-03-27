@@ -29,3 +29,6 @@ artifact/
 __pycache__/
 *.pyc
 node_modules/
+.next/
+dist/
+build/
