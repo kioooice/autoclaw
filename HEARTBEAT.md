@@ -20,8 +20,6 @@
 
 ### 每次心跳（必查）
 
-- [ ] **检查定时任务触发文件**：`scripts/.github-trending-trigger`
-  - 如果存在且时间在 1 小时内 → 读取内容并推送消息 → 删除文件
 - [ ] 检查是否有待处理的反思任务
 - [ ] 检查 memory/experiences/ 是否有需要提炼的内容
 - [ ] **自动学习**：如果当天未执行，运行 `python scripts/auto_learn.py --days 1`

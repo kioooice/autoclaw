@@ -5,5 +5,11 @@
 ## 工作流
 Superpowers 完整工作流：brainstorming → plan → execute → review。
 
+## Vibe Coding流程
+1. 需求澄清（问场景，不问技术栈）
+2. 生成最小可跑版本
+3. 逐步迭代（每次加一个功能）
+4. 跑通再继续
+
 ## 网关
 需重启时直接执行，不询问。Windows 用 stop+start 非 restart。

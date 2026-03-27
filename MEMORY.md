@@ -94,11 +94,13 @@ experiences/*.md → 提取记忆 → 6 类分类 → 去重合并 → 更新 L0
 - 2026-03-18：阿里百炼模型配置更新、Vibe Coding 教程整理
 - 2026-03-19：记忆系统 v3.0 重构
 - 2026-03-20：Context Hub 技能安装、重复回复问题解决
+- 2026-03-26：YOLO CPU 部署方案研究
 
 ### 已记录案例（insights/cases/）
 - memory_search 不可用解决方案
 - Windows Gateway restart 失败解决方案
 - 重复回复问题排查（OpenClaw 版本 bug）
+- YOLO CPU 部署方案（边缘设备无 GPU）
 
 ### 已安装工具
 | 工具 | 用途 |
