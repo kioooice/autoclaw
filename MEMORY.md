@@ -113,6 +113,16 @@ experiences/*.md → 提取记忆 → 6 类分类 → 去重合并 → 更新 L0
 | agent-reach | AI Agent 互联网能力 |
 | Context Hub | 获取第三方库最新文档（避免 API 幻觉）|
 
+### 已安装技能
+| 技能 | 触发词 | 说明 |
+|------|--------|------|
+| github-trending-analysis | `今日 GitHub 热点`、`GitHub trending` | GitHub 每日热点分析，生成报告 |
+| autoglm-websearch | 联网搜索关键词 | AutoGLM 网络搜索 |
+| autoglm-browser-agent | 浏览器自动化 | 智能浏览器自动化代理 |
+
+### 已知问题
+- **Windows GBK 编码**：PowerShell 默认 GBK，UTF-8 文件读取乱码。解决方案：用 `[System.IO.File]::WriteAllText()` 写 UTF-8
+
 ### 🔄 分身同步（重要）
 
 | 时机 | 操作 |

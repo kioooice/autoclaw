@@ -1,12 +1,13 @@
 {
-    "lastChecks":  {
-                       "email":  null,
-                       "calendar":  null,
-                       "weather":  null,
-                       "reflection":  "2026-03-30T10:19:00+08:00",
-                       "gitSync":  "2026-03-30T10:20:00+08:00",
-                       "heartbeat":  "2026-03-30T10:19:00+08:00",
-                       "autoLearn":  "2026-03-30T10:19:00+08:00",
-                       "vectorIndex":  "2026-03-27T04:40:00+08:00"
-                   }
+  "lastChecks": {
+    "email": null,
+    "calendar": null,
+    "weather": null,
+    "reflection": "2026-03-30T10:19:00+08:00",
+    "gitSync": "2026-04-01T00:21:00+08:00",
+    "heartbeat": "2026-03-30T10:19:00+08:00",
+    "autoLearn": "2026-03-30T10:19:00+08:00",
+    "vectorIndex": "2026-03-27T04:40:00+08:00",
+    "gitPushPending": false
+  }
 }
