@@ -95,8 +95,8 @@ experiences/*.md → 提取记忆 → 6 类分类 → 去重合并 → 更新 L0
 - 2026-03-19：记忆系统 v3.0 重构
 - 2026-03-20：Context Hub 技能安装、重复回复问题解决
 - 2026-03-26：YOLO CPU 部署方案研究
-<<<<<<< HEAD
-- 2026-03-27：OpenClaw 实际应用研究报告
+- 2026-03-27：OpenClaw 应用研究报告
+- 2026-03-29：**Agent 协作全局规则写入 AGENTS.md**
 
 ### 已记录案例（insights/cases/）
 - memory_search 不可用解决方案
