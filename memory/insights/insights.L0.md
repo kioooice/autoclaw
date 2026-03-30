@@ -14,4 +14,9 @@
 - 重复回复 10+ 遍 → 升级 OpenClaw 到 v2026.3.13
 
 ## 案例
-见 insights/cases/ 目录。
+- memory_search 不可用 → 用 read 替代
+- Windows gateway restart → 用 stop+start
+- 重复回复 10+ 遍 → 升级 OpenClaw
+- YOLO CPU 部署 → YOLOv8n + OpenVINO
+
+详情见 insights/cases/ 目录。

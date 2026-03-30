@@ -1,24 +1,23 @@
 # YOLO CPU 部署方案（边缘设备无 GPU）
 
-## 问题
-- 场景：边缘设备无 GPU，需要实时目标检测
-- 硬件：Intel i3-12100 CPU
+## 背景
+用户有 i3-12100 CPU，需要实时检测方案。
 
-## 解决方案：YOLOv8n + OpenVINO
+## 推荐方案：YOLOv8n + OpenVINO
 
-### 性能预估（i3-12100）
+**性能预估（i3-12100）：**
 | 配置 | FPS | 延迟 |
 |------|-----|------|
 | YOLOv8n (OpenVINO) | 100-150 | 6-10ms |
 | YOLOv8s (OpenVINO) | 40-60 | 16-25ms |
 
-### 部署步骤
+**部署命令：**
 ```bash
 pip install ultralytics openvino
 yolo export model=yolov8n.pt format=openvino
 ```
 
-### Python 推理
+**Python 推理：**
 ```python
 from ultralytics import YOLO
 model = YOLO("yolov8n_openvino_model/")
@@ -41,4 +40,4 @@ results = model("image.jpg")
 - ONNX Runtime：通用加速方案
 
 ---
-*创建于 2026-03-26，提炼自 experiences/2026-03-26.md*
+*提炼自 experiences/2026-03-26.md*
