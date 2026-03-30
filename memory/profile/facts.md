@@ -49,6 +49,12 @@
 - [技能] [工作流] 通过 SKILL.md 定义：触发条件、步骤、工具、注意事项
 - [技能] [工作流] 自定义工作流目录：`skills/auto-generated/`
 
+### Context Hub
+- [工具] [文档] Context Hub：获取第三方库/SDK/API 的最新文档
+- [工具] [文档] 安装：`npm install -g @aisuite/chub`
+- [工具] [文档] 用途：避免 AI 编程代理的 API 幻觉和过时信息
+- [工具] [文档] 来源：https://github.com/andrewyng/context-hub（吴恩达团队）
+
 ---
 
 *更新规则：新事实追加到对应分类末尾，过时事实标记 `~~删除线~~`*
